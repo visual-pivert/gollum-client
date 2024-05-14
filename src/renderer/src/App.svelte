@@ -1,5 +1,6 @@
 <script lang="ts">
     import LoginPage from "./pages/LoginPage.svelte"
+    import SignupPage from "./pages/SignupPage.svelte";
 
 
 
@@ -8,6 +9,9 @@
 
 <div class="main-container">
     <LoginPage></LoginPage>
+    <SignupPage></SignupPage>
+
+
 </div>
 
 <style>
