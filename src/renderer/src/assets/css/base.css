@@ -1,6 +1,10 @@
 @import url(./reset.css);
 @import url(remixicon/fonts/remixicon.css);
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
 	--background: #282828;
 	--background2: #343434;
@@ -17,13 +21,43 @@
 
 	--border-radius: 5px;
 	--bar-thinkness: 36px;
+
+    --border: solid 1px var(--font-color2);
 }
 
 body {
-	position: relative;
+    display: flex;
 	min-height: 100vh;
 	font-size: 14px;
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	color: var(--font-color);
 	background-color: var(--background);
 }
+
+/* Form */
+.form-group {}
+.form-input {
+    background-color: transparent;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    padding: 12px 0;
+    padding-left: 20px;
+    width: 100%;
+}
+
+/* Button */
+.btn {
+    border-radius: var(--border-radius);
+    color: var(--font-color);
+    padding: 12px 20px;
+    font-weight: bold;
+}
+
+.btn.btn-full{
+    width: 100%;
+}
+
+.btn.btn-primary {
+    background: var(--blue-btn);
+}
+
