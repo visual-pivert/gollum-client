@@ -1,0 +1,29 @@
+@import url(./reset.css);
+@import url(remixicon/fonts/remixicon.css);
+
+:root {
+	--background: #282828;
+	--background2: #343434;
+	--background3: #4D4D4D;
+	--background4: #3E3E3E;
+
+	--font-color: #E2E2E2;
+	--font-color2: #BDBDBD;
+
+	--blue: #319CFF;
+	--blue-btn: #1D619F;
+	--green: #69FF66;
+	--yellow: #FAFF00;
+
+	--border-radius: 5px;
+	--bar-thinkness: 36px;
+}
+
+body {
+	position: relative;
+	min-height: 100vh;
+	font-size: 14px;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	color: var(--font-color);
+	background-color: var(--background);
+}
