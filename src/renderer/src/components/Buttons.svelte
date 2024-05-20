@@ -1,0 +1,62 @@
+<script>
+	// import { createEventDispatcher } from 'svelte'
+	// const dispatch = createEventDispatcher()
+
+	export let label = ''
+	export let icon = ''
+	export let icon2 = ''
+	export let bg_color = 'var(--background3)'
+	export let icon_color = ''
+
+	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
+	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
+
+	// label = [...label][0].toUpperCase() + [...label].slice(1).join('')
+</script>
+
+<button
+	style="
+    padding: {padding};
+    background-color: {bg_color};
+    "
+	on:click
+>
+	<slot>
+		{#if icon}
+			<i class="{icon} icon1" style="color: {icon_color}"></i>
+		{/if}
+		<span>{label}</span>
+		{#if icon2}
+			<i class="{icon2} icon2"></i>
+		{/if}
+	</slot>
+</button>
+
+<!-- <button style="
+    padding: {padding};
+    background-color: {bg_color};
+">
+    <slot name="icon1" />
+    <slot name="label" />
+    <slot />
+    <slot name="icon2" />
+</button> -->
+
+<style>
+	button {
+		all: unset;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		border-radius: var(--border-radius);
+	}
+	button > i {
+		font-size: 1.1em;
+	}
+	button > .icon1 {
+		margin-right: 5px;
+	}
+	button > .icon2 {
+		margin-left: 10px;
+	}
+</style>

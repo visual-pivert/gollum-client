@@ -17,13 +17,48 @@
 
 	--border-radius: 5px;
 	--bar-thinkness: 36px;
+	--footer-thinkness: 20px;
+
+	--scrollbar-thinkness: 6px;
 }
 
 body {
-	position: relative;
-	min-height: 100vh;
+	height: 100vh;
 	font-size: 14px;
 	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 	color: var(--font-color);
 	background-color: var(--background);
+	overflow: hidden;
 }
+
+/*===== CUSTOM SCROLLBAR =====*/
+::-webkit-scrollbar {
+	width: var(--scrollbar-thinkness);
+}
+
+/*---- le fleche kely @ scrollbar ty ----*/
+::-webkit-scrollbar-button:vertical:decrement,
+::-webkit-scrollbar-button:vertical:increment {
+	width: 0;
+	height: 5px;
+}
+
+/*---- ty le mihisakisaka ----*/
+::-webkit-scrollbar-thumb {
+	border-radius: 3px;
+	background-color: var(--background2);
+	/* background-color: var(--color); */
+	opacity: 0;
+}
+
+/* ::-webkit-scrollbar-thumb:hover {
+    opacity: 1;
+} */
+/*---- ty ndray le arrière plan ----*/
+/* ::-webkit-scrollbar-track-piece {
+	background-color: var(--background4);
+} */
+
+/*---- zay ny scrollbal custom ----*/
+
+/* ================================== */
