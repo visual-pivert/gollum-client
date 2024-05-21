@@ -1,3 +1,0 @@
-interface IButtons {
-    onClick(): void
-}

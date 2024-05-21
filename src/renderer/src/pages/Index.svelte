@@ -1,18 +1,10 @@
 <script>
-	import { current_page } from '../store/store'
+	import { current_page } from '../store'
 	import Topbar from './../components/TopBar.svelte'
-	import LeftBar from '../components/left/LeftBar.svelte'
+	import LeftBar from '../components/left_aside/LeftBar.svelte'
 	import RightSide from '../components/right_aside/RightSide.svelte'
-	import ProjectPage from '../components/ProjectPage.svelte'
-	import SettingsPage from '../components/SettingsPage.svelte'
-	// import { afterUpdate } from 'svelte'
 	import Footer from '../components/Footer.svelte'
-
-	const page_list = {
-		project_page: ProjectPage,
-		settings_page: SettingsPage
-	}
-	$: selected_page = page_list[$current_page]
+	import { page_list } from '../components/left_aside/left_aside_buttons'
 </script>
 
 <main>
@@ -23,7 +15,7 @@
 		</div>
 		<div class="center">
 			<div class="center-container">
-				<svelte:component this={selected_page} />
+				<svelte:component this={page_list[$current_page]} />
 			</div>
 		</div>
 		<div class="right">

@@ -4,7 +4,7 @@
 		active_branch_dropdown,
 		active_project_dropdown
 		// somethingIsOpen
-	} from '../store/store'
+	} from '../store'
 	import { openDropdown } from '../event'
 
 	import Button from './Buttons.svelte'

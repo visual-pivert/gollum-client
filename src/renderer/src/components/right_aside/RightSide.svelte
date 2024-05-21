@@ -1,9 +1,8 @@
 <script lang="ts">
 	import NavIcon from '../NavIcon.svelte'
-	import { active_aside_component } from '../../store/store'
-	import { top_buttons, bottom_buttons, contents } from './elements'
+	import { active_aside_component } from '../../store'
+	import { top_buttons, bottom_buttons, contents } from './right_aside_buttons'
 	import { afterUpdate } from 'svelte'
-
 	afterUpdate(() => {})
 </script>
 
