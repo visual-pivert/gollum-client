@@ -29,7 +29,7 @@ test('Log repository', async () => {
 
 test('Commit repository', async () => {
     const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
-    await gollum_git.commit('test gollum commit2', ['stain_is_the_best'], false)
+    await gollum_git.commit('test gollum commit222222', [], true)
 })
 
 test('Checkout repository', async () => {

@@ -68,9 +68,9 @@ export class GollumGit {
 
     public async commit(message: string, file_or_dir_to_add: [], amend = false) {
         this.git_obj.add(file_or_dir_to_add)
-        const commit = await this.git_obj.commit(message)
+        let commit = await this.git_obj.commit(message)
         if (amend) 
-            commit = await this.git_obj.commit(message, { '--amend': null })
+            commit = await this.git_obj.commit(message, ['--amend'])
     }
 
     public async checkout(branch: string){
