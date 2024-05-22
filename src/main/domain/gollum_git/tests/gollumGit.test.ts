@@ -1,0 +1,43 @@
+import { expect, test } from 'vitest'
+import { GollumGit } from '../GollumGit'
+import { sum } from './sum'
+
+test('Push repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', {username: 'username', password: 'password'})
+    await gollum_git.push('origin', 'master')
+})
+
+test('Clone repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test', {username: 'username', password: 'password'})
+    await gollum_git.clone('192.168.122.144/git/username/first', '')
+})
+
+test('Pull repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'password' })
+    await gollum_git.pull('origin', 'master')
+})
+
+test('Status repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
+    console.log((await gollum_git.status()))
+})
+
+test('Log repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
+    console.log(await gollum_git.log())
+})
+
+test('Commit repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
+    await gollum_git.commit('test gollum commit2', ['stain_is_the_best'], false)
+})
+
+test('Checkout repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
+    await gollum_git.checkout('a')
+})
+
+test('merge repository', async () => {
+    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', { username: 'username', password: 'passwrod' })
+    await gollum_git.merge('a')
+})

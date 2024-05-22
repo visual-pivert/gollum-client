@@ -1,8 +1,11 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+	loginSubmit: (login_value: {}) => ipcRenderer.invoke('gapi:login-submit', login_value),
+    signupSubmit: (signup_value: {}) => ipcRenderer.invoke('gapi:signup-submit', signup_value)
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

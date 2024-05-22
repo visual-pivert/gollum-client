@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { Auth } from '#main/domain/auth/Auth'
+import { Account } from '#main/domain/account/Account'
+import { init } from '#main/init'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -42,6 +45,9 @@ app.whenReady().then(() => {
 	// Set app user model id for windows
 	electronApp.setAppUserModelId('com.electron')
 
+    // init the application
+    init()
+
 	// Default open or close DevTools by F12 in development
 	// and ignore CommandOrControl + R in production.
 	// see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -51,6 +57,8 @@ app.whenReady().then(() => {
 
 	// IPC test
 	ipcMain.on('ping', () => console.log('pong'))
+	ipcMain.handle('gapi:login-submit',async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
+    ipcMain.handle('gapi:signup-submit', async (_, form_data) => await Account.createAccount(form_data['username'], form_data['password'], form_data['cpassword'], form_data['email']))
 
 	createWindow()
 
