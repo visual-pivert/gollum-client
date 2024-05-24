@@ -6,6 +6,7 @@ import { Auth } from '#main/domain/auth/Auth'
 import { Account } from '#main/domain/account/Account'
 import { init } from '#main/init'
 import { GollumGit } from '#main/domain/gollum_git/GollumGit'
+import { GollumApi } from './domain/gollum_api/GollumApi'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -62,6 +63,22 @@ app.whenReady().then(() => {
     // IPC gollum api(gapi)
 	ipcMain.handle('gapi:login-submit',async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
     ipcMain.handle('gapi:signup-submit', async (_, form_data) => await Account.createAccount(form_data['username'], form_data['password'], form_data['cpassword'], form_data['email']))
+
+    ipcMain.handle('gapi:tree', async (_, access_token, repo_path, branch, tree_path) => {
+        try {
+            return await GollumApi.treeRepo(access_token, repo_path, branch, tree_path)
+        } catch (error: any) {
+            return error.message
+        }
+    })
+
+    ipcMain.handle('gapi:blob', async (_, access_token, repo_path, branch, file_path) => {
+        try {
+            return await GollumApi.blobRepo(access_token, repo_path, branch, file_path)
+        } catch (error: any) {
+            return error.message
+        }
+    })
     
 
     //IPC git
