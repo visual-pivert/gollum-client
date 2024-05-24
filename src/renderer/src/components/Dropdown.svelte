@@ -19,7 +19,14 @@
 
 <div class="dropdown">
 	<slot name="button">
-		<Buttons {label} {icon} icon2={dropdown_arrow} bg_color="transparent" on:click />
+		<Buttons
+			classes="dropdown-btn"
+			{label}
+			{icon}
+			icon2={dropdown_arrow}
+			bg_color="transparent"
+			on:click
+		/>
 	</slot>
 	{#if show}
 		<div class="contents-container p-2" transition:fade={{ duration: 10 }}>
@@ -56,8 +63,9 @@
 		top: 120%;
 		opacity: 1;
 		background-color: var(--background2);
+		border: 1px solid var(--background3);
 		border-radius: var(--border-radius);
-		box-shadow: 0px 1px 5px 0px var(--background);
+		box-shadow: 0px 2px 5px 0px var(--background);
 		overflow-y: hidden;
 		transition: opacity 0.2s;
 	}

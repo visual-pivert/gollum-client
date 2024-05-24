@@ -7,6 +7,7 @@
 	export let icon2 = ''
 	export let bg_color = 'var(--background3)'
 	export let icon_color = ''
+	export let classes = ''
 
 	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
 	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
@@ -15,6 +16,7 @@
 </script>
 
 <button
+	class={classes}
 	style="
     padding: {padding};
     background-color: {bg_color};
