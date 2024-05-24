@@ -1,5 +1,5 @@
 import { get, type Writable } from 'svelte/store'
-import { active_aside_component, current_page, somethingIsOpen } from './store'
+import { active_aside_component, current_page, current_view_path, somethingIsOpen } from './store'
 
 function $<T>(writable: Writable<T>): T {
     let v: T
@@ -21,6 +21,25 @@ export function activeAsideComponent(component: string): void {
         active_aside_component.update(() => component)
     } else {
         active_aside_component.update(() => '')
-    }
+    }  
+}
+
+// export function changeCurrentTree(path: string): void {
     
+// }
+
+export function resetCurrentViewPath(folder: string) {
+    current_view_path.set([folder])
+}
+export function updateCurrentViewPath(folder: string, level: number = 1) {
+    if(get(current_view_path).length - 1 < level) {
+        current_view_path.update(() => [...get(current_view_path), folder])     
+    } else {
+        get(current_view_path)[level] = folder
+        current_view_path.update(() => [...get(current_view_path)])
+    }
+}
+
+export function backCurrentView() {
+    get(current_view_path).pop()
 }

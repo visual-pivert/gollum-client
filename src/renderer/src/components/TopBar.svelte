@@ -1,24 +1,31 @@
 <script>
-	import { afterUpdate } from 'svelte'
+	// import { afterUpdate } from 'svelte'
 	import {
 		active_branch_dropdown,
-		active_project_dropdown
+		active_project_dropdown,
+		current_directory,
+		// current_view_path,
+		local_project_list,
+		not_cloned_project_list,
+		selected_project
+
 		// somethingIsOpen
 	} from '../store'
-	import { openDropdown } from '../event'
+	import { openDropdown, resetCurrentViewPath } from '../event'
 
 	import Button from './Buttons.svelte'
 	import Dropdown from './Dropdown.svelte'
 
-	const projects = ['project1', 'project2', 'project3']
-	const branches = ['branch1', 'branch2', 'brnach3', 'branch4']
+	// const projects = $project_list.map((project) => project.name)
+	// const projects = ['project1']
+	// const branches = ['branch1', 'branch2', 'brnach3', 'branch4']
 
 	$: show_branches = $active_branch_dropdown
 	$: show_projects = $active_project_dropdown
 
-	afterUpdate(() => {
-		// console.log($somethingIsOpen)
-	})
+	// afterUpdate(() => {
+	// 	// console.log($somethingIsOpen)
+	// })
 </script>
 
 <!-- <svelte:document on:click={closeAllDropdown} /> -->
@@ -39,23 +46,86 @@
 			</Dropdown> -->
 
 			<Dropdown
-				label="Project"
-				contents={projects}
+				label={$selected_project ? $selected_project.name : 'Project'}
 				show_content={show_projects}
 				on:click={() => openDropdown(active_project_dropdown)}
-			></Dropdown>
-			<Dropdown
-				label="Branch"
-				icon="ri-git-branch-line"
-				contents={branches}
-				show_content={show_branches}
-				on:click={() => openDropdown(active_branch_dropdown)}
-			></Dropdown>
+			>
+				<div class="dropdown-project" slot="content">
+					<div>
+						<span class="div-title">Projets local:</span>
+						<ul>
+							{#each $local_project_list as project}
+								<li class="rounded hover:bg-background4">
+									<a
+										href="."
+										class="px-3 py-2 flex"
+										on:click|preventDefault={() => {
+											selected_project.update(() => project)
+											resetCurrentViewPath(project.name)
+											current_directory.update(
+												() => $selected_project.active_branch.contents
+											)
+										}}
+									>
+										<span>{project.name}</span>
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</div>
+					<div>
+						<span class="div-title">Projets non clonés:</span>
+						<ul>
+							{#each $not_cloned_project_list as project}
+								<li class="rounded hover:bg-background4">
+									<a
+										href="."
+										class="px-3 py-2 flex"
+										on:click|preventDefault={() =>
+											($selected_project = project)}
+									>
+										<span>{project.name}</span>
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				</div>
+			</Dropdown>
+			{#if $selected_project}
+				<Dropdown
+					label={$selected_project.active_branch.name}
+					icon="ri-git-branch-line"
+					show_content={show_branches}
+					on:click={() => openDropdown(active_branch_dropdown)}
+				>
+					<div slot="content">
+						<ul>
+							{#each Object.entries($selected_project.branch_list) as branch}
+								<li class="rounded hover:bg-background4">
+									<a
+										href="."
+										class="px-3 py-2 flex"
+										on:click|preventDefault={() => {
+											current_directory.update(() => branch[1].contents)
+											console.log($current_directory)
+										}}
+									>
+										{branch[1].name}
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				</Dropdown>
+			{/if}
 		</div>
-		<div class="button-container">
-			<Button icon="ri-arrow-left-down-line" icon_color="var(--blue)" label="Pull" />
-			<Button icon="ri-arrow-right-up-line" icon_color="var(--green)" label="Push" />
-		</div>
+		{#if $selected_project}
+			<div class="button-container">
+				<Button icon="ri-arrow-left-down-line" icon_color="var(--blue)" label="Pull" />
+				<Button icon="ri-arrow-right-up-line" icon_color="var(--green)" label="Push" />
+			</div>
+		{/if}
 	</div>
 	<div class="right"></div>
 </div>
@@ -82,6 +152,20 @@
 	.dropdown-container {
 		display: flex;
 		gap: 10px;
+	}
+	.dropdown-project {
+		width: 200px;
+	}
+	.dropdown-project > div:not(:last-child) {
+		margin-bottom: 12px;
+		padding-bottom: 4px;
+		border-bottom: 1px solid var(--background3);
+	}
+	.div-title {
+		display: inline-block;
+		font-size: 0.9em;
+		color: var(--font-color3);
+		margin-bottom: 4px;
 	}
 	.button-container {
 		display: flex;

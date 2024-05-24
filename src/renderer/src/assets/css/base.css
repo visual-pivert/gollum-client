@@ -1,6 +1,10 @@
 @import url(./reset.css);
 @import url(remixicon/fonts/remixicon.css);
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
 	--background: #282828;
 	--background2: #343434;
@@ -9,6 +13,7 @@
 
 	--font-color: #E2E2E2;
 	--font-color2: #BDBDBD;
+	--font-color3: #bdbdbdb1;
 
 	--blue: #319CFF;
 	--blue-btn: #1D619F;
@@ -29,6 +34,16 @@ body {
 	color: var(--font-color);
 	background-color: var(--background);
 	overflow: hidden;
+	line-height: 1em;
+}
+
+a {
+	text-decoration: none;
+	color: var(--font-color2);
+}
+
+a:hover {
+	color: var(--font-color);
 }
 
 /*===== CUSTOM SCROLLBAR =====*/

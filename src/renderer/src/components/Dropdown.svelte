@@ -22,13 +22,15 @@
 		<Buttons {label} {icon} icon2={dropdown_arrow} bg_color="transparent" on:click />
 	</slot>
 	{#if show}
-		<slot name="content">
-			<ul class="contents-container" transition:fade={{ duration: 10 }}>
-				{#each contents as content}
-					<li>{content}</li>
-				{/each}
-			</ul>
-		</slot>
+		<div class="contents-container p-2" transition:fade={{ duration: 10 }}>
+			<slot name="content">
+				<ul>
+					{#each contents as content}
+						<li class="px-3 py-2">{content}</li>
+					{/each}
+				</ul>
+			</slot>
+		</div>
 	{/if}
 </div>
 
@@ -47,11 +49,11 @@
 		position: relative;
 	}
 	.contents-container {
-		width: 150px;
+		width: max-content;
+		min-width: 150px;
 		max-height: 400px;
 		position: absolute;
 		top: 120%;
-		padding: 0 0;
 		opacity: 1;
 		background-color: var(--background2);
 		border-radius: var(--border-radius);
@@ -59,10 +61,4 @@
 		overflow-y: hidden;
 		transition: opacity 0.2s;
 	}
-	.contents-container > li {
-		padding: 8px 10px;
-	}
-	/* .contents-container.show {
-		opacity: 1;
-	} */
 </style>

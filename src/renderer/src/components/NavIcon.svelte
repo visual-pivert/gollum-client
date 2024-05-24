@@ -26,7 +26,13 @@
 		color: white;
 	}
 	i {
+		/* width: 14px; */
+		/* height: 14px; */
 		font-size: 1em;
 		color: var(--font-color2);
 	}
+	/* i::before {
+		width: 14px;
+		height: 14px;
+	} */
 </style>
