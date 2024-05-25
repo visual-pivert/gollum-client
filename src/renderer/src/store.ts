@@ -1,21 +1,19 @@
-import { get, writable, type Writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 
-export const somethingIsOpen = writable(false)
 export const active_project_dropdown = writable(false)
 export const active_branch_dropdown = writable(false)
 
-export const current_page = writable('project_page')
+export const current_view = writable('project_page')
 
 export const active_aside_component = writable('')
 
 export const selected_project: Writable<Repo | null> = writable(null)
 
-export const current_view_path: Writable<string[]> = writable([''])
+export const current_directory_path: Writable<string[]> = writable([''])
 
 interface Directory {
     type: string,
     name: string,
-    files: Directory[] | undefined
 }
 
 export const current_directory: Writable<Directory[] | undefined>= writable(undefined)
@@ -50,52 +48,12 @@ const p1 = new Repo('Project 1')
 p1.createBranch('test')
 // p1.active_branch = p1.branch_list.test
 p1.branch_list.master.contents = [
-    {
-        type: 'folder',
-        name: 'src',
-        files: [
-            {
-                type: 'folder',
-                name: 'main',
-                files: [
-                    {type: 'file', name: 'main.ts', files: undefined}
-                ]
-            },
-            {
-                type: 'folder',
-                name: 'preload',
-                files: [
-                    {type: 'file', name: 'preload.ts', files: undefined}
-                ]
-            },
-            {
-                type: 'folder',
-                name: 'renderer',
-                files: [
-                    {type: 'file', name: 'index.html', files: undefined}
-                ]
-            }
-        ]
-    },
-    {
-        type: 'folder',
-        name: 'build',
-        files: [
-            {type: 'file', name: 'icon.png', files: undefined}
-        ]
-    },
-    {
-        type: 'file',
-        name: 'README',
-        files: undefined
-    }
+    {type: 'folder',name: 'src'},
+    {type: 'folder',name: 'build'},
+    {type: 'file',name: 'README'}
 ]
 p1.branch_list.test.contents = [
-    {
-        type: 'file',
-        name: 'README',
-        files: undefined
-    }
+    {type: 'file',name: 'README'}
 ]
 const p2 = new Repo('project name 2')
 const p3 = new Repo('project3')

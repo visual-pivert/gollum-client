@@ -1,10 +1,10 @@
 // import { get } from "svelte/store"
 import { get } from "svelte/store"
-import { updateCurrentPage } from "../../event"
+import { updateCurrentView } from "../../event"
 import ProjectPage from "../ProjectPage.svelte"
 import SettingsPage from "../SettingsPage.svelte"
 import { RightButtons } from "../right_aside/right_aside_buttons"
-import { current_page } from "../../store"
+import { current_view } from "../../store"
 
 
 
@@ -23,11 +23,11 @@ class LeftButtons extends RightButtons  {
         super(name, icon, on_click)
     }
     public onClick() {
-        updateCurrentPage(this.name)
+        updateCurrentView(this.name)
         this.setIsActive()
     }
     protected setIsActive(): void {
-        this.isActive = get(current_page) == this.name
+        this.isActive = get(current_view) == this.name
     }
 }
 

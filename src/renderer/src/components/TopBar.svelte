@@ -11,7 +11,7 @@
 
 		// somethingIsOpen
 	} from '../store'
-	import { openDropdown, resetCurrentViewPath } from '../event'
+	import { openDropdown, resetCurrentDirectoryPath } from '../event'
 
 	import Button from './Buttons.svelte'
 	import Dropdown from './Dropdown.svelte'
@@ -20,8 +20,8 @@
 	// const projects = ['project1']
 	// const branches = ['branch1', 'branch2', 'brnach3', 'branch4']
 
-	$: show_branches = $active_branch_dropdown
-	$: show_projects = $active_project_dropdown
+	// $: show_branches = $active_branch_dropdown
+	// $: show_projects = $active_project_dropdown
 
 	// afterUpdate(() => {
 	// 	// console.log($somethingIsOpen)
@@ -47,7 +47,7 @@
 
 			<Dropdown
 				label={$selected_project ? $selected_project.name : 'Project'}
-				show_content={show_projects}
+				show_content={$active_project_dropdown}
 				on:click={() => openDropdown(active_project_dropdown)}
 			>
 				<div class="dropdown-project" slot="content">
@@ -61,7 +61,7 @@
 										class="px-3 py-2 flex"
 										on:click|preventDefault={() => {
 											selected_project.update(() => project)
-											resetCurrentViewPath(project.name)
+											resetCurrentDirectoryPath(project.name)
 											current_directory.update(
 												() => $selected_project.active_branch.contents
 											)
@@ -96,7 +96,7 @@
 				<Dropdown
 					label={$selected_project.active_branch.name}
 					icon="ri-git-branch-line"
-					show_content={show_branches}
+					show_content={$active_branch_dropdown}
 					on:click={() => openDropdown(active_branch_dropdown)}
 				>
 					<div slot="content">
@@ -108,6 +108,7 @@
 										class="px-3 py-2 flex"
 										on:click|preventDefault={() => {
 											current_directory.update(() => branch[1].contents)
+											$selected_project.active_branch = branch[1]
 											console.log($current_directory)
 										}}
 									>

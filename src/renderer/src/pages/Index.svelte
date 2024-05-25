@@ -1,5 +1,5 @@
 <script>
-	import { current_page } from '../store'
+	import { current_view } from '../store'
 	import Topbar from './../components/TopBar.svelte'
 	import LeftBar from '../components/left_aside/LeftBar.svelte'
 	import RightSide from '../components/right_aside/RightSide.svelte'
@@ -15,7 +15,7 @@
 		</div>
 		<div class="center">
 			<div class="center-container">
-				<svelte:component this={page_list[$current_page]} />
+				<svelte:component this={page_list[$current_view]} />
 			</div>
 		</div>
 		<div class="right">

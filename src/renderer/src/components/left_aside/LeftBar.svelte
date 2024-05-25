@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { current_page } from '../../store'
+	import { current_view } from '../../store'
 	import NavIcon from '../NavIcon.svelte'
 	import { bottom_left_buttons, top_left_buttons } from './left_aside_buttons'
 </script>
@@ -10,7 +10,7 @@
 			<NavIcon
 				icon={button.icon}
 				on:click={() => button.onClick()}
-				active={$current_page == button.name}
+				active={$current_view == button.name}
 			/>
 		{/each}
 	</div>
@@ -19,7 +19,7 @@
 			<NavIcon
 				icon={button.icon}
 				on:click={() => button.onClick()}
-				active={$current_page == button.name}
+				active={$current_view == button.name}
 			/>
 		{/each}
 	</div>

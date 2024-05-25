@@ -1,21 +1,21 @@
 <script>
-	import { updateCurrentViewPath } from '../event'
-	import { current_directory, current_view_path } from '../store'
+	import { updateCurrentDirectoryPath } from '../event'
+	import { current_directory, current_directory_path } from '../store'
 
-	// const current_tree = [
+	// const current_directory = [
 	// 	{ name: 'src', commit_message: 'initial commit', date: '4 months ago', type: 'folder' },
 	// 	{ name: 'build', commit_message: 'initial commit', date: '4 months ago', type: 'folder' },
 	// 	{ name: 'README.md', commit_message: 'initial commit', date: '4 months ago', type: 'file' }
 	// ]
-	$: current_tree = $current_directory
-	$: current_path = $current_view_path
+	// $: current_directory = $current_directory
+	// $: current_path = $current_directory_path
 </script>
 
 <div class="project-wrapper">
 	{#if $current_directory}
 		<div class="porject-container container mb-3 p-4">
 			<div class="breadcrumbs frame">
-				{#each current_path as step (step)}
+				{#each $current_directory_path as step}
 					<a href="." on:click={() => {}}>{step}<i class="ri-arrow-right-s-line"></i></a>
 				{/each}
 			</div>
@@ -32,7 +32,7 @@
 						<tr class="hidden">
 							<td colspan="3" class="py-3 px-4 text-left w-1/3">sssssss</td>
 						</tr>
-						{#each Object.entries(current_tree) as item}
+						{#each Object.entries($current_directory) as item}
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-1/3">
 									<div class="name-cell">
@@ -45,8 +45,8 @@
 											href="."
 											class="text-font-color hover:text-blue hover:underline"
 											on:click|preventDefault={() => {
-												updateCurrentViewPath(item[1].name)
-												console.log(current_path)
+												updateCurrentDirectoryPath(item[1].name)
+												console.log($current_directory_path)
 											}}>{item[1].name}</a
 										>
 									</div>

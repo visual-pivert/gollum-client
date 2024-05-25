@@ -1,11 +1,5 @@
 import { get, type Writable } from 'svelte/store'
-import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_page, current_view_path, somethingIsOpen } from './store'
-
-function $<T>(writable: Writable<T>): T {
-    let v: T
-    writable.subscribe(value => v = value)
-    return v
-}
+import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, current_directory_path } from './store'
 
 export function closeAllDropdown() {
     active_project_dropdown.update(() => false)
@@ -26,8 +20,8 @@ document.addEventListener('click', (e) => {
     }
 })
 
-export function updateCurrentPage(page: string): void {
-    current_page.update(() => page)
+export function updateCurrentView(page: string): void {
+    current_view.update(() => page)
 }
 
 export function activeAsideComponent(component: string): void {
@@ -42,18 +36,18 @@ export function activeAsideComponent(component: string): void {
     
 // }
 
-export function resetCurrentViewPath(folder: string) {
-    current_view_path.set([folder])
+export function resetCurrentDirectoryPath(folder: string) {
+    current_directory_path.set([folder])
 }
-export function updateCurrentViewPath(folder: string, level: number = 1) {
-    if(get(current_view_path).length - 1 < level) {
-        current_view_path.update(() => [...get(current_view_path), folder])     
+export function updateCurrentDirectoryPath(folder: string, level: number = 1) {
+    if(get(current_directory_path).length - 1 < level) {
+        current_directory_path.update(() => [...get(current_directory_path), folder])     
     } else {
-        get(current_view_path)[level] = folder
-        current_view_path.update(() => [...get(current_view_path)])
+        get(current_directory_path)[level] = folder
+        current_directory_path.update(() => [...get(current_directory_path)])
     }
 }
 
-export function backCurrentView() {
-    get(current_view_path).pop()
+export function backToPreviewsDirectory() {
+    get(current_directory_path).pop()
 }
