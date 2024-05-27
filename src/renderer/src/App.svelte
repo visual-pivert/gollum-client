@@ -3,7 +3,7 @@
     import LoginPage from "./pages/LoginPage.svelte"
     import SignupPage from "./pages/SignupPage.svelte";
     import { setContext } from 'svelte';
-    import { current_page } from '#renderer/store'
+    import { current_page } from "./store";
     import TestPage from "./pages/TestPage.svelte";
     import Index from './pages/Index.svelte'
 

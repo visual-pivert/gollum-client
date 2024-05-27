@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { FormUtil } from "#renderer/utils/FormUtil"
-    import { RouteUtil } from "#renderer/utils/RouteUtil"
+    import { FormUtil } from "../utils/FormUtil";
+    import { RouteUtil } from "../utils/RouteUtil";
 </script>
 
 <div class="account-page">

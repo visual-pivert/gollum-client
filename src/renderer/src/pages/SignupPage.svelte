@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { FormUtil } from "#renderer/utils/FormUtil"
-    import { RouteUtil } from "#renderer/utils/RouteUtil"
+    import { RouteUtil } from "../utils/RouteUtil";
+    import { FormUtil } from "../utils/FormUtil";
 </script>
 
 

@@ -1,25 +1,24 @@
 
-import { SimpleGit, simpleGit, Options } from "simple-git";
-import { env } from "#main/env"
-import { type } from "os";
+import { SimpleGit, simpleGit } from "simple-git";
+import { env } from "../../env";
 
-export class StatusType {
-    public not_added: []
-    public conflicted: []
-    public created: []
-    public delete: []
-    public ignored: any
-    public modified: []
-    public renamed: []
-    public files: []
-    public staged: []
-    public ahead: number
-    public behind: number
-    public current: string
-    public tracking: string
-    public detached: boolean
-    public isClean: () => boolean
-}
+// export class StatusType {
+//     public not_added: []
+//     public conflicted: []
+//     public created: []
+//     public delete: []
+//     public ignored: any
+//     public modified: []
+//     public renamed: []
+//     public files: []
+//     public staged: []
+//     public ahead: number
+//     public behind: number
+//     public current: string
+//     public tracking: string
+//     public detached: boolean
+//     public isClean: () => boolean
+// }
 
 export class GollumGit {
 
@@ -54,9 +53,9 @@ export class GollumGit {
         return await this.git_obj.pull(remote, branch_name).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
-    public async status(): StatusType {
+    public async status(): Promise<any> {
         // TODO: Mise en place d'une partie interface pour eviter qu'un objet inconnu ressort de cette fonction
-        const status = await this.git_obj.status() as unknown as StatusType
+        const status = await this.git_obj.status()
         return status
     }
 

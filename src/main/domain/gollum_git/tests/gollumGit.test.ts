@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest'
 import { GollumGit } from '../GollumGit'
-import { sum } from './sum'
 
 test('Push repository', async () => {
     const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', {username: 'username', password: 'password'})

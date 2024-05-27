@@ -1,4 +1,4 @@
-import { current_page } from "#renderer/store"
+import { current_page } from "../store"
 
 export class RouteUtil {
     public static redirectTo (page_key: string) {
