@@ -19,8 +19,11 @@ function createWindow(): void {
 		webPreferences: {
 			preload: join(__dirname, '../preload/index.js'),
 			sandbox: false
-		}
+		},
+		useContentSize: false
 	})
+
+	mainWindow.setMinimumSize(640, 360)
 
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.show()

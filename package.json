@@ -41,7 +41,6 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.1",
 		"@types/node": "^18.19.9",
 		"autoprefixer": "^10.4.19",
-		"chai": "^5.1.1",
 		"electron": "^28.2.0",
 		"electron-builder": "^24.9.1",
 		"electron-vite": "^2.0.0",
