@@ -12,7 +12,7 @@
         const credentials = { username: 'username', password: 'password' }
         const git_log_response = await window.api.gitLog(basedir, credentials)
         console.log("API reponse: " + JSON.stringify(git_log_response))
-    }}>git log...</button>
+    }}>git tree...</button>
 </div>
 
 <div class="test-tree">
@@ -28,7 +28,7 @@
             'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ==',
             'username/new_repo2',
             'a',
-            'sdf'
+            ''
         )
     }}>
         <button type="submit">submit</button>
