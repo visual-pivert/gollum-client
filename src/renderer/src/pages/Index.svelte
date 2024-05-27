@@ -44,14 +44,14 @@
 		margin-left: 5px;
 	}
 	.center {
-		width: 500px;
+		/* width: 500px; */
 		flex-grow: 1;
 		height: 100%;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
 	.center-container {
-		width: max(min(100%, 700px), 310px);
+		width: max(min(100%, 7in), 2in);
 		height: max-content;
 		padding: 5px 6px;
 		margin: 0 auto;

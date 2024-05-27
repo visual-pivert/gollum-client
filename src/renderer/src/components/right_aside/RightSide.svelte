@@ -57,7 +57,7 @@
 		gap: 10px;
 	}
 	.content {
-		width: 250px;
+		width: 2.5in;
 		height: 100%;
 		background-color: var(--background2);
 	}

@@ -5,7 +5,7 @@
 	export let label = ''
 	export let icon = ''
 	export let icon2 = ''
-	export let bg_color = 'var(--background3)'
+	export let bg_color = '--background3'
 	export let icon_color = ''
 	export let classes = ''
 
@@ -19,7 +19,7 @@
 	class={classes}
 	style="
     padding: {padding};
-    background-color: {bg_color};
+    background-color: var({bg_color});
     "
 	on:click
 >
