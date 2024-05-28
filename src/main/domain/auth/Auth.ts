@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { env } from '#main/env'
-import { GolSession } from '#main/domain/session/GolSession'
+import { env } from '../../env'
+import { GolSession } from '../session/GolSession'
 
 export class Auth {
 	public static async login(username: string, password: string) {

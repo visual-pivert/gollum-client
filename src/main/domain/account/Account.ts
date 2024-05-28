@@ -1,4 +1,4 @@
-import { env } from "#main/env"
+import { env } from "../../env"
 import axios from "axios"
 
 export class Account {

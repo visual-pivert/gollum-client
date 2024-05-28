@@ -1,6 +1,5 @@
-import { env } from '#main/env'
+import { env } from '../../env'
 import axios from 'axios'
-import { error } from 'console'
 
 export class GollumApi {
 
@@ -8,7 +7,7 @@ export class GollumApi {
     static api_header_config = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
 
     // authentication
-    public static async access(username: string, password: string): object {
+    public static async access(username: string, password: string): Promise<object> {
 		const login_endpoint = GollumApi.domain + '/api/access'
 		const data = { username: username, password: password }
 		const headers = {...GollumApi.api_header_config}
@@ -21,7 +20,7 @@ export class GollumApi {
 		}
 		return api_out
     }
-    public static async revoke(access_token: string): object {
+    public static async revoke(access_token: string): Promise<object> {
         const logout_endpoint = GollumApi.domain + '/api/revoke'
         const headers = { 'Access-Token': access_token }
         let api_out = {}
@@ -35,7 +34,7 @@ export class GollumApi {
     }
 
     // repo
-    public static async createRepo(access_token: string, repo_name: string): object {
+    public static async createRepo(access_token: string, repo_name: string): Promise<object> {
         const create_repo_endpoint = GollumApi.domain + '/api/repo/create'
         const headers = {...GollumApi.api_header_config, 'Access-Token': access_token}
         const data = { 'repo_path': repo_name }
@@ -49,7 +48,7 @@ export class GollumApi {
         return api_out
     }
 
-    public static async deleteRepo(access_token: string, repo_name: string): object {
+    public static async deleteRepo(access_token: string, repo_name: string): Promise<object> {
         const delete_repo_endpoint = GollumApi.domain + '/api/repo/delete'
         const headers = { ...GollumApi.api_header_config, 'Access-Token': access_token }
         const data = {'repo_path': repo_name}
@@ -63,7 +62,7 @@ export class GollumApi {
         return api_out
     }
 
-    public static async listRepo(access_token: string): object {
+    public static async listRepo(access_token: string): Promise<object> {
         const list_repo_endpoint = GollumApi.domain + '/api/repo/list'
         const headers = { 'Access-Token': access_token }
         let api_out = {}
@@ -104,7 +103,7 @@ export class GollumApi {
     }
 
     // contributors
-    public static async addContrib(access_token: string, username: string, repo_path: string): object {
+    public static async addContrib(access_token: string, username: string, repo_path: string): Promise<object> {
         const add_contrib_endpoint = GollumApi.domain + `/api/contributors/add/${repo_path}`
         const headers = { ...GollumApi.api_header_config, 'Access-Token': access_token }
         const data = { 'username': username }
@@ -118,7 +117,7 @@ export class GollumApi {
         return api_out
     }
 
-    public static async deleteContrib(access_token: string, username: string, repo_path: string): object {
+    public static async deleteContrib(access_token: string, username: string, repo_path: string): Promise<object> {
         const delete_contrib_endpoint = GollumApi.domain + `/api/contributors/delete/${repo_path}`
         const headers = { ...GollumApi.api_header_config, 'Access-token': access_token }
         const data = { 'username': username }
@@ -133,7 +132,7 @@ export class GollumApi {
     }
 
     // user
-    public static async getUser(access_token: string, username: string): object {
+    public static async getUser(access_token: string, username: string): Promise<object> {
         const get_user_endpoint = GollumApi.domain + '/api/users/get/' + username
         const headers = { 'Access-Token': access_token }
         let api_out = {}
@@ -145,7 +144,7 @@ export class GollumApi {
         }
         return api_out
     }
-    public static async deleteUser(access_token: string, username: string): object {
+    public static async deleteUser(access_token: string, username: string): Promise<object> {
         const delete_user_endpoint = GollumApi.domain + '/api/users/delete'
         const headers = { ...GollumApi.api_header_config, 'Access-Token': access_token }
         const data = { 'username': username }
@@ -158,7 +157,7 @@ export class GollumApi {
         }
         return api_out
     }
-    public static async signup(username: string, email: string, password: string): object {
+    public static async signup(username: string, email: string, password: string): Promise<object> {
         const signup_endpoint = GollumApi.domain + '/api/signup'
         const headers = { ...GollumApi.api_header_config }
         const data = { 'username': username, 'email': email, 'password': password }
@@ -172,7 +171,7 @@ export class GollumApi {
         return api_out
     }
 
-    public static async listUser(access_token: string): object {
+    public static async listUser(access_token: string): Promise<object> {
         const list_user_endpoint = GollumApi.domain + '/api/users/list'
         const headers = { 'Access-Token': access_token }
         let api_out = {}
