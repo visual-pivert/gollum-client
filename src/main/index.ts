@@ -23,7 +23,7 @@ function createWindow(): void {
 		useContentSize: false
 	})
 
-	mainWindow.setMinimumSize(640, 360)
+	mainWindow.setMinimumSize(670, 360)
 
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.show()

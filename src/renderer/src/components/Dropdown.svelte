@@ -54,6 +54,7 @@
 <style>
 	.dropdown {
 		position: relative;
+		max-width: 120px;
 	}
 	.contents-container {
 		width: max-content;

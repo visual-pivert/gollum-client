@@ -48,8 +48,11 @@
 	button {
 		all: unset;
 		cursor: pointer;
+		box-sizing: border-box;
+		width: 100%;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		border-radius: var(--border-radius);
 	}
 	button > i {
@@ -60,5 +63,11 @@
 	}
 	button > .icon2 {
 		margin-left: 10px;
+	}
+	span {
+		/* width: 100%; */
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
 	}
 </style>
