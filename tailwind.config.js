@@ -3,6 +3,7 @@ module.exports = {
   content: ["./src/renderer/src/**/*.{html,svelte}"],
   theme: {
     colors: {
+      'transparent': 'transparent',
       'background': '#282828',
       'background2': '#343434',
       'background3': '#4D4D4D',

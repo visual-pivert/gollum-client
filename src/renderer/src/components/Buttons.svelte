@@ -6,9 +6,11 @@
 	export let icon = ''
 	export let icon2 = ''
 	export let bg_color = '--background3'
+	export let disabled = false
 	export let icon_color = ''
 	export let classes = ''
 
+	$: cursor = disabled ? 'not-allowed' : 'pointer'
 	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
 	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
 
@@ -18,10 +20,12 @@
 <button
 	class={classes}
 	style="
+	cursor:{cursor};
     padding: {padding};
     background-color: var({bg_color});
     "
 	on:click
+	{disabled}
 >
 	<slot>
 		{#if icon}
@@ -47,7 +51,6 @@
 <style>
 	button {
 		all: unset;
-		cursor: pointer;
 		box-sizing: border-box;
 		width: 100%;
 		display: flex;
@@ -70,4 +73,7 @@
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
 	}
+	/* button.border {
+		border: 1px solid var(--font-color2);
+	} */
 </style>

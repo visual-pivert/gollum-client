@@ -97,7 +97,6 @@ a:hover {
 ::-webkit-scrollbar-thumb {
 	border-radius: 3px;
 	background-color: var(--background2);
-	/* background-color: var(--color); */
 	opacity: 0;
 }
 
