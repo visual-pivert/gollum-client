@@ -1,5 +1,5 @@
 import { get, type Writable } from 'svelte/store'
-import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, current_directory_path } from './store'
+import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, project_tree_path } from './store'
 
 export function closeAllDropdown() {
     active_project_dropdown.update(() => false)
@@ -29,25 +29,25 @@ export function activeAsideComponent(component: string): void {
         active_aside_component.update(() => component)
     } else {
         active_aside_component.update(() => '')
-    }  
+    }
 }
 
 // export function changeCurrentTree(path: string): void {
-    
+
 // }
 
 export function resetCurrentDirectoryPath(folder: string) {
-    current_directory_path.set([folder])
+    project_tree_path.set([folder])
 }
 export function updateCurrentDirectoryPath(folder: string, level: number = 1) {
-    if(get(current_directory_path).length - 1 < level) {
-        current_directory_path.update(() => [...get(current_directory_path), folder])     
+    if(get(project_tree_path).length - 1 < level) {
+        project_tree_path.update(() => [...get(project_tree_path), folder])
     } else {
-        get(current_directory_path)[level] = folder
-        current_directory_path.update(() => [...get(current_directory_path)])
+        get(project_tree_path)[level] = folder
+        project_tree_path.update(() => [...get(project_tree_path)])
     }
 }
 
 export function backToPreviewsDirectory() {
-    get(current_directory_path).pop()
+    get(project_tree_path).pop()
 }

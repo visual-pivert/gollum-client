@@ -6,9 +6,12 @@ const api = {
 
     // La partie api de gollum
 	loginSubmit: (login_value: {}) => ipcRenderer.invoke('gapi:login-submit', login_value),
+	getLoggedUser: () => ipcRenderer.invoke('gapi:logged-user'),
     signupSubmit: (signup_value: {}) => ipcRenderer.invoke('gapi:signup-submit', signup_value),
     apiRepoTree: (access_token: string, repo_path: string, branch: string, tree_path: string) => ipcRenderer.invoke('gapi:tree', access_token, repo_path, branch, tree_path),
     apiRepoBlob: (access_token: string, repo_path: string, branch: string, file_path: string) => ipcRenderer.invoke('gapi:blob', access_token, repo_path, branch, file_path),
+	apiRepoList: (access_token: string) => ipcRenderer.invoke('gapi:list', access_token),
+	apiListBranches: (access_token: string, repo_path) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
 
 
     // La partie GIT

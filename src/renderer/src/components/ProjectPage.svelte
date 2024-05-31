@@ -1,6 +1,6 @@
 <script>
 	import { updateCurrentDirectoryPath } from '../event'
-	import { current_directory, current_directory_path } from '../store'
+	import { project_tree_path, project_tree, storeTree } from '../store'
 
 	// const current_directory = [
 	// 	{ name: 'src', commit_message: 'initial commit', date: '4 months ago', type: 'folder' },
@@ -12,11 +12,14 @@
 </script>
 
 <div class="project-wrapper">
-	{#if $current_directory}
+	{#if $project_tree}
 		<div class="porject-container container mb-3 p-4">
 			<div class="breadcrumbs frame">
-				{#each $current_directory_path as step}
-					<a href="." on:click={() => {}}>{step}<i class="ri-arrow-right-s-line"></i></a>
+				{#each $project_tree_path as step, index}
+					<a href={$project_tree_path.slice(1, index+1).join('/')} on:click|preventDefault={ async (e) => {
+						updateCurrentDirectoryPath(e.currentTarget.getAttribute('href'))
+						await storeTree()
+					}}>{step}<i class="ri-arrow-right-s-line"></i></a>
 				{/each}
 			</div>
 			<div class="content">
@@ -32,11 +35,11 @@
 						<tr class="hidden">
 							<td colspan="3" class="py-3 px-4 text-left w-1/3">sssssss</td>
 						</tr>
-						{#each Object.entries($current_directory) as item}
+						{#each $project_tree as item}
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-1/3">
 									<div class="name-cell">
-										{#if item[1].type == 'folder'}
+										{#if item.type == 'tree'}
 											<i class="ri-folder-fill"></i>
 										{:else}
 											<i class="ri-file-3-line"></i>
@@ -44,10 +47,12 @@
 										<a
 											href="."
 											class="text-font-color hover:text-blue hover:underline"
-											on:click|preventDefault={() => {
-												updateCurrentDirectoryPath(item[1].name)
-												console.log($current_directory_path)
-											}}>{item[1].name}</a
+											on:click|preventDefault={ async () => {
+												if ('tree' == item.type){
+													updateCurrentDirectoryPath(item.name)
+													await storeTree()
+												}
+											}}>{item.name}</a
 										>
 									</div>
 								</td>

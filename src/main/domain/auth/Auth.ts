@@ -1,29 +1,31 @@
 import axios from 'axios'
 import { env } from '../../env'
 import { GolSession } from '../session/GolSession'
+import { GollumApi } from '../gollum_api/GollumApi'
 
 export class Auth {
 	public static async login(username: string, password: string) {
 		// appele de l'api
-		const login_endpoint = env['API_DOMAIN'] + '/api/access'
-		const data = { username: username, password: password }
-		const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-        const gol_session = new GolSession(env['VAR_PATH'])
-        let api_out = {}
-		try {
-			const fetched_value = await axios({
-				method: 'POST',
-				headers: headers,
-				data: data,
-				url: login_endpoint
-			})
-			api_out = fetched_value.data
-            gol_session.addOrModify({AUTH_USER: api_out["username"], AUTH_TOKEN: api_out["access_token"]})
+		const gollum_api = await GollumApi.access(username, password)
+
+		if (gollum_api["datas"]) {
+			const {username, access_token} = gollum_api["datas"]
+			const gol_session = new GolSession(env['VAR_PATH'])
+			gol_session.addOrModify({AUTH_USER: username, AUTH_TOKEN: access_token})
             gol_session.persist()
-		} catch (error: any) {
-			api_out = error.response.data
+			return gollum_api
 		}
-		return api_out
+		return null
+	}
+
+	public static async getLoggedUser () {
+		const gol_session = new GolSession(env['VAR_PATH'])
+		const auth_user = gol_session.get('AUTH_USER')
+		const auth_token = gol_session.get('AUTH_TOKEN')
+		if (auth_user && auth_token) {
+			return {'AUTH_USER': auth_user, 'AUTH_TOKEN': auth_token}
+		}
+		return {}
 	}
 
 	public static logout(): string {

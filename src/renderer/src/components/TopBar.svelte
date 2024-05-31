@@ -7,14 +7,36 @@
 		// current_view_path,
 		local_project_list,
 		not_cloned_project_list,
-		selected_project
+		branch_list,
+		current_branch,
+		current_project,
+
+		storeNotClonedListProject,
+
+		storeBranchList,
+
+		storeTree,
+
+		storeCurrentProject,
+
+		storeCurrentBranch,
+		project_tree_path
+
+
+
+
+
 
 		// somethingIsOpen
 	} from '../store'
+
 	import { openDropdown, resetCurrentDirectoryPath } from '../event'
 
 	import Button from './Buttons.svelte'
 	import Dropdown from './Dropdown.svelte'
+	import { onMount } from 'svelte'
+
+	import { storeLoggedUser } from '../store'
 
 	// const projects = $project_list.map((project) => project.name)
 	// const projects = ['project1']
@@ -26,6 +48,24 @@
 	// afterUpdate(() => {
 	// 	// console.log($somethingIsOpen)
 	// })
+
+	onMount(async () => {
+		await storeLoggedUser()
+	})
+
+	// fire lorsque le dropdown qui liste les projets est clicked
+	async function projectDropdownClicked() {
+		openDropdown(active_project_dropdown)
+		await storeNotClonedListProject()
+	}
+
+	// fire lorsque un projet non clone est clicked
+	async function notClonedUniqueProjectClicked(project) {
+		await storeCurrentProject(project)
+		await storeBranchList()
+		await storeTree()
+	}
+
 </script>
 
 <!-- <svelte:document on:click={closeAllDropdown} /> -->
@@ -41,14 +81,14 @@
 					{#each projects as project}
 						<li>{project}</li>
 					{/each}
-					
+
 				</ul>
 			</Dropdown> -->
 
 			<Dropdown
-				label={$selected_project ? $selected_project.name : 'Project'}
+				label={$current_project ? $current_project.repo_path : 'Project'}
 				show_content={$active_project_dropdown}
-				on:click={() => openDropdown(active_project_dropdown)}
+				on:click={ async () => { await projectDropdownClicked() }}
 			>
 				<div class="dropdown-project" slot="content">
 					<div>
@@ -60,10 +100,10 @@
 										href="."
 										class="px-3 py-2 flex"
 										on:click|preventDefault={() => {
-											selected_project.update(() => project)
-											resetCurrentDirectoryPath(project.name)
+											resetCurrentDirectoryPath(project.repo_path)
+											storeCurrentProject(project)
 											current_directory.update(
-												() => $selected_project.active_branch.contents
+												() => $current_project.active_branch.contents
 											)
 										}}
 									>
@@ -78,13 +118,11 @@
 						<ul>
 							{#each $not_cloned_project_list as project}
 								<li class="rounded hover:bg-background4">
-									<a
-										href="."
-										class="px-3 py-2 flex"
-										on:click|preventDefault={() =>
-											($selected_project = project)}
-									>
-										<span>{project.name}</span>
+									<a href="." class="px-3 py-2 flex" on:click|preventDefault={ async () => {
+										await resetCurrentDirectoryPath(project.repo_path)
+										await notClonedUniqueProjectClicked(project)
+									}}>
+										<span>{project.repo_path}</span>
 									</a>
 								</li>
 							{/each}
@@ -92,27 +130,30 @@
 					</div>
 				</div>
 			</Dropdown>
-			{#if $selected_project}
+			{#if $current_project}
 				<Dropdown
-					label={$selected_project.active_branch.name}
+					label={$current_branch.branch_name}
 					icon="ri-git-branch-line"
 					show_content={$active_branch_dropdown}
-					on:click={() => openDropdown(active_branch_dropdown)}
+					on:click={ async () => {
+						openDropdown(active_branch_dropdown)
+						await storeBranchList()
+					}}
 				>
 					<div slot="content">
 						<ul>
-							{#each Object.entries($selected_project.branch_list) as branch}
+							{#each $branch_list as branch}
 								<li class="rounded hover:bg-background4">
 									<a
 										href="."
 										class="px-3 py-2 flex"
-										on:click|preventDefault={() => {
-											current_directory.update(() => branch[1].contents)
-											$selected_project.active_branch = branch[1]
-											console.log($current_directory)
+										on:click|preventDefault={ async () => {
+											resetCurrentDirectoryPath($current_project.repo_path)
+											await storeCurrentBranch(branch)
+											await storeTree()
 										}}
 									>
-										{branch[1].name}
+										{branch.branch_name}
 									</a>
 								</li>
 							{/each}
@@ -121,7 +162,7 @@
 				</Dropdown>
 			{/if}
 		</div>
-		{#if $selected_project}
+		{#if $current_project}
 			<div class="button-container">
 				<Button icon="ri-arrow-left-down-line" icon_color="var(--blue)" label="Pull" />
 				<Button icon="ri-arrow-right-up-line" icon_color="var(--green)" label="Push" />

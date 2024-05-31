@@ -33,6 +33,12 @@ import { sum } from './sum'
 //     console.log(JSON.stringify(out))
 // })
 
+// test('List branches', async () => {
+// 	const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiA3MzExMywgIl90aW1lc3RhbXAiOiAxNzE3MDUzNjg5fQ=='
+// 	const out = await GollumApi.listBranches(access_token, 'username/new_repo2')
+// 	console.log(out)
+// })
+
 // test('Add contributors', async () => {
 //     const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ=='
 //     const out = await GollumApi.addContrib(access_token, 'username3', 'username/first')
@@ -69,14 +75,14 @@ import { sum } from './sum'
 //     console.log(JSON.stringify(out))
 // })
 
-// test('Tree repo', async () => {
-//     const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ=='
-//     const out = await GollumApi.treeRepo(access_token, 'username/new_repo2', 'master', '')
-//     console.log(JSON.stringify(out))
-// })
-
-test('Blob repo', async () => {
-    const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ=='
-    const out = await GollumApi.blobRepo(access_token, 'username/new_repo2', 'master', 'blob')
+test('Tree repo', async () => {
+    const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAyNjk3MiwgIl90aW1lc3RhbXAiOiAxNzE3MTQzMzE3fQ=='
+    const out = await GollumApi.treeRepo(access_token, 'username/first', 'master', 'test3')
     console.log(JSON.stringify(out))
 })
+
+// test('Blob repo', async () => {
+//     const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ=='
+//     const out = await GollumApi.blobRepo(access_token, 'username/new_repo2', 'master', 'blob')
+//     console.log(JSON.stringify(out))
+// })

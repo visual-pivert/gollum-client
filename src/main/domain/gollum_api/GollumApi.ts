@@ -102,6 +102,19 @@ export class GollumApi {
         return api_out
     }
 
+	public static async listBranches(access_token: string, repo_path: string) {
+		const list_branches_endpoint = GollumApi.domain + `/api/repo/branches/${repo_path}`
+        const headers = { 'Access-token': access_token }
+        let api_out = {}
+		try {
+			const fetched_value = await axios({method: 'GET', headers: headers, url: list_branches_endpoint})
+			api_out = fetched_value.data
+		} catch (error: any) {
+			api_out = error.response.data
+		}
+		return api_out
+	}
+
     // contributors
     public static async addContrib(access_token: string, username: string, repo_path: string): Promise<object> {
         const add_contrib_endpoint = GollumApi.domain + `/api/contributors/add/${repo_path}`
