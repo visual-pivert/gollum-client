@@ -2,6 +2,7 @@
 	// import { afterUpdate } from 'svelte'
 	import {
 		active_branch_dropdown,
+		active_menu_dropdown,
 		active_project_dropdown,
 		current_directory,
 		// current_view_path,
@@ -28,11 +29,21 @@
 	// })
 </script>
 
-<!-- <svelte:document on:click={closeAllDropdown} /> -->
-
 <div class="topbar">
 	<div class="left">
-		<button id="menu-btn"><i class="ri-menu-line"></i></button>
+		<!-- <button id="menu-btn" on:click={() => (show_menu = !show_menu)}
+			><i class="ri-menu-line"></i></button
+		> -->
+		<Dropdown
+			disable_arrow_icon={true}
+			icon="ri-menu-line"
+			show_content={$active_menu_dropdown}
+			on:click={() => openDropdown(active_menu_dropdown)}
+		>
+			<div slot="content">
+				<a href=".">Nouveau projet</a>
+			</div>
+		</Dropdown>
 		<button id="reload-btn"><i class="ri-restart-line"></i></button>
 		<div class="dropdown-container">
 			<!-- <Button label="Project" icon2="ri-arrow-down-s-line" bg_color="transparent" />

@@ -1,9 +1,10 @@
 import { get, type Writable } from 'svelte/store'
-import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, current_directory_path } from './store'
+import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, current_directory_path, active_menu_dropdown } from './store'
 
 export function closeAllDropdown() {
     active_project_dropdown.update(() => false)
     active_branch_dropdown.update(() => false)
+    active_menu_dropdown.update(() => false)
 }
 export function openDropdown(writable: Writable<boolean>): void {
     if(get(writable)) {

@@ -13,6 +13,7 @@
 	$: cursor = disabled ? 'not-allowed' : 'pointer'
 	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
 	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
+	padding = label ? padding : '4px'
 
 	// label = [...label][0].toUpperCase() + [...label].slice(1).join('')
 </script>
@@ -29,7 +30,7 @@
 >
 	<slot>
 		{#if icon}
-			<i class="{icon} icon1" style="color: {icon_color}"></i>
+			<i class="{icon} icon1 {label ? 'mr-2' : ''}" style="color: {icon_color}"></i>
 		{/if}
 		<span>{label}</span>
 		{#if icon2}
@@ -62,7 +63,7 @@
 		font-size: 1.1em;
 	}
 	button > .icon1 {
-		margin-right: 5px;
+		/* margin-right: 5px; */
 	}
 	button > .icon2 {
 		margin-left: 10px;
