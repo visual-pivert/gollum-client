@@ -82,7 +82,7 @@ export async function storeLoggedUser () {
 }
 
 export async function storeNotClonedListProject() {
-	const repo_list = await window.api.apiRepoList(get(logged_user).AUTH_TOKEN)
+	const repo_list = await window.api.apiRepoList(get(logged_user).access_token)
 	not_cloned_project_list.update(() => repo_list.datas)
 	console.log(get(not_cloned_project_list))
 }
@@ -93,7 +93,7 @@ export async function storeCurrentProject(project) {
 }
 
 export async function storeBranchList() {
-	const fetched_branch_list = await window.api.apiListBranches(get(logged_user).AUTH_TOKEN, get(current_project).repo_path)
+	const fetched_branch_list = await window.api.apiListBranches(get(logged_user).access_token, get(current_project).repo_path)
 	branch_list.update(() => fetched_branch_list.datas)
 	current_branch.update(() => fetched_branch_list.datas[0])
 }
@@ -105,9 +105,9 @@ export async function storeCurrentBranch(branch) {
 export async function storeTree() {
 	let fetch_tree = null
 	if (get(project_tree_path).length > 1) {
-		fetch_tree = await window.api.apiRepoTree(get(logged_user).AUTH_TOKEN, get(current_project).repo_path, get(current_branch).branch_name, get(project_tree_path).slice(1).join('/'))
+		fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name, get(project_tree_path).slice(1).join('/'))
 	} else {
-		fetch_tree = await window.api.apiRepoTree(get(logged_user).AUTH_TOKEN, get(current_project).repo_path, get(current_branch).branch_name)
+		fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name)
 	}
 	project_tree.update(() => fetch_tree.datas)
 	console.log(get(project_tree))
