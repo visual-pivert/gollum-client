@@ -2,6 +2,7 @@
 	import { selected_project } from '../store'
 	import Button from './Buttons.svelte'
 	import BranchDropdown from './branch_dropdown/BranchDropdown.svelte'
+	import MenuDropdown from './menu_dropdown/MenuDropdown.svelte'
 	import ProjectDropdown from './project_dropdown/ProjectDropdown.svelte'
 </script>
 
@@ -10,16 +11,7 @@
 		<!-- <button id="menu-btn" on:click={() => (show_menu = !show_menu)}
 			><i class="ri-menu-line"></i></button
 		> -->
-		<!-- <Dropdown
-			disable_arrow_icon={true}
-			icon="ri-menu-line"
-			show_content={$active_menu_dropdown}
-			on:click={() => openDropdown(active_menu_dropdown)}
-		>
-			<div slot="content">
-				<a href=".">Nouveau projet</a>
-			</div>
-		</Dropdown> -->
+		<MenuDropdown />
 		<button id="reload-btn"><i class="ri-restart-line"></i></button>
 		<div class="dropdown-container">
 			<ProjectDropdown />

@@ -13,7 +13,7 @@
 	$: cursor = disabled ? 'not-allowed' : 'pointer'
 	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
 	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
-	padding = label ? padding : '4px'
+	padding = label ? padding : '2px'
 
 	// label = [...label][0].toUpperCase() + [...label].slice(1).join('')
 </script>
