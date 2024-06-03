@@ -1,19 +1,28 @@
-import { get, type Writable } from 'svelte/store'
-import { active_aside_component, active_branch_dropdown, active_project_dropdown, current_view, current_directory_path, active_menu_dropdown } from './store'
+import { get, type Writable, } from 'svelte/store'
+import { active_aside_component, current_view, current_directory_path, close_function_overlays } from './store'
+
 
 export function closeAllDropdown() {
-    active_project_dropdown.update(() => false)
-    active_branch_dropdown.update(() => false)
-    active_menu_dropdown.update(() => false)
+    get(close_function_overlays).forEach((func) => {
+        func()
+    })
+    close_function_overlays.set([])
 }
-export function openDropdown(writable: Writable<boolean>): void {
+
+
+export function openDropdown(writable: Writable<Boolean>, onOpen: () => void = () => {}): void {
     if(get(writable)) {
         writable.update(() => false)
     } else {
         closeAllDropdown()
-        writable.update(() => !get(writable))
+        
+        close_function_overlays.update(() => [...get(close_function_overlays), () => writable.set(false) ])
+
+        onOpen()  
+        writable.update((value) => !value)   
     }
 }
+
 
 document.addEventListener('click', (e) => {
     if(!(e.target as HTMLElement).closest('.dropdown-btn')) {

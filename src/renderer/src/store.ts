@@ -2,9 +2,7 @@ import { writable, type Writable } from "svelte/store";
 
 export const current_page = writable('login-page')
 
-export const active_project_dropdown = writable(false)
-export const active_branch_dropdown = writable(false)
-export const active_menu_dropdown = writable(false)
+export const close_function_overlays = writable([])
 
 export const current_view = writable('project_page')
 

@@ -3,9 +3,6 @@
 
 	import { fade } from 'svelte/transition'
 
-	// import { afterUpdate, createEventDispatcher } from 'svelte'
-	// const dispatch = createEventDispatcher()
-
 	export let label = ''
 	export let icon = ''
 	export let contents = []
@@ -14,7 +11,6 @@
 	const dropdown_arrow = 'ri-arrow-down-s-line'
 
 	export let show_content = false
-	// console.log(show_content)
 	$: show = show_content
 </script>
 
