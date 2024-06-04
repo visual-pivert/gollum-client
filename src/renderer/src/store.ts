@@ -75,6 +75,10 @@ export const current_branch = writable({})
 
 export const project_tree = writable(null)
 
+export const cloned_project_list = writable([])
+
+export const is_local_repo = writable(true)
+
 
 export async function storeLoggedUser () {
 	const fetched_logged_user = await window.api.getLoggedUser()
@@ -87,28 +91,50 @@ export async function storeNotClonedListProject() {
 	console.log(get(not_cloned_project_list))
 }
 
+export async function storeClonedListProject() {
+	const repo_list = await window.api.localRepoList()
+	cloned_project_list.update(() => repo_list)
+	console.log(get(cloned_project_list))
+}
+
 export async function storeCurrentProject(project) {
 	console.log(project)
 	current_project.update(() => project)
 }
 
 export async function storeBranchList() {
-	const fetched_branch_list = await window.api.apiListBranches(get(logged_user).access_token, get(current_project).repo_path)
-	branch_list.update(() => fetched_branch_list.datas)
-	current_branch.update(() => fetched_branch_list.datas[0])
+	if (get(is_local_repo)) {
+		const getted_branch_list = await window.api.localBranchList(get(project_tree_path).join('/'))
+		branch_list.update(() => getted_branch_list)
+	} else {
+		const fetched_branch_list = await window.api.apiListBranches(get(logged_user).access_token, get(current_project).repo_path)
+		console.log(fetched_branch_list)
+		branch_list.update(() => fetched_branch_list.datas)
+	}
 }
+
 
 export async function storeCurrentBranch(branch) {
 	current_branch.update(() => branch)
+	if (get(is_local_repo)) {
+		console.log(branch)
+		await window.api.localCheckout(get(project_tree_path).join('/') , branch.branch_name)
+	}
 }
 
 export async function storeTree() {
-	let fetch_tree = null
-	if (get(project_tree_path).length > 1) {
-		fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name, get(project_tree_path).slice(1).join('/'))
+	if (get(is_local_repo)) {
+		let get_tree = null
+		get_tree = await window.api.localRepoTree(get(project_tree_path).join('/'))
+		project_tree.update(() => get_tree)
 	} else {
-		fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name)
+		let fetch_tree = null
+		if (get(project_tree_path).length > 1) {
+			fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name, get(project_tree_path).slice(1).join('/'))
+		} else {
+			fetch_tree = await window.api.apiRepoTree(get(logged_user).access_token, get(current_project).repo_path, get(current_branch).branch_name)
+		}
+		project_tree.update(() => fetch_tree.datas)
 	}
-	project_tree.update(() => fetch_tree.datas)
 	console.log(get(project_tree))
 }

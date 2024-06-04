@@ -11,7 +11,7 @@ const api = {
     apiRepoTree: (access_token: string, repo_path: string, branch: string, tree_path: string) => ipcRenderer.invoke('gapi:tree', access_token, repo_path, branch, tree_path),
     apiRepoBlob: (access_token: string, repo_path: string, branch: string, file_path: string) => ipcRenderer.invoke('gapi:blob', access_token, repo_path, branch, file_path),
 	apiRepoList: (access_token: string) => ipcRenderer.invoke('gapi:list', access_token),
-	apiListBranches: (access_token: string, repo_path) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
+	apiListBranches: (access_token: string, repo_path: string) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
 
 
     // La partie GIT
@@ -23,6 +23,12 @@ const api = {
     gitPull: (basedir: string, credentials:{username: string, password: string}, remote: string, branch_name: string) => ipcRenderer.invoke('git:pull', basedir, credentials, remote, branch_name),
     gitStatus: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:status', basedir, credentials),
     gitLog: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:log', basedir, credentials),
+
+	// La partie local
+	localRepoList: () => ipcRenderer.invoke('local:list'),
+	localRepoTree: (sub_dir: string) => ipcRenderer.invoke('local:tree', sub_dir),
+	localBranchList: (sub_dir: string) => ipcRenderer.invoke('local:branch_list', sub_dir),
+	localCheckout: (sub_dir: string, branch_name: string) => ipcRenderer.invoke('local:checkout', sub_dir, branch_name),
 
 }
 

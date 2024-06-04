@@ -5,11 +5,12 @@
 		active_project_dropdown,
 		current_directory,
 		// current_view_path,
-		local_project_list,
+		cloned_project_list,
 		not_cloned_project_list,
 		branch_list,
 		current_branch,
 		current_project,
+		storeClonedListProject,
 
 		storeNotClonedListProject,
 
@@ -20,7 +21,10 @@
 		storeCurrentProject,
 
 		storeCurrentBranch,
-		project_tree_path
+		project_tree_path,
+
+		is_local_repo
+
 
 
 
@@ -56,13 +60,25 @@
 	// fire lorsque le dropdown qui liste les projets est clicked
 	async function projectDropdownClicked() {
 		openDropdown(active_project_dropdown)
+		await storeClonedListProject()
 		await storeNotClonedListProject()
 	}
 
 	// fire lorsque un projet non clone est clicked
 	async function notClonedUniqueProjectClicked(project) {
+		is_local_repo.update(() => false)
+		uniqueProjectClicked(project)
+	}
+
+	async function clonedUniqueProjectClicked(project) {
+		is_local_repo.update(() => true)
+		uniqueProjectClicked(project)
+	}
+
+	async function uniqueProjectClicked(project) {
 		await storeCurrentProject(project)
 		await storeBranchList()
+		current_branch.update(() => $branch_list[0])
 		await storeTree()
 	}
 
@@ -94,20 +110,15 @@
 					<div>
 						<span class="div-title">Projets local:</span>
 						<ul>
-							{#each $local_project_list as project}
+							{#each $cloned_project_list as project}
 								<li class="rounded hover:bg-background4">
-									<a
-										href="."
-										class="px-3 py-2 flex"
-										on:click|preventDefault={() => {
-											resetCurrentDirectoryPath(project.repo_path)
-											storeCurrentProject(project)
-											current_directory.update(
-												() => $current_project.active_branch.contents
-											)
+									<a href="." class="px-3 py-2 flex"
+										on:click|preventDefault={ async () => {
+											await resetCurrentDirectoryPath(project.repo_path)
+											await clonedUniqueProjectClicked(project)
 										}}
 									>
-										<span>{project.name}</span>
+										<span>{project.repo_path}</span>
 									</a>
 								</li>
 							{/each}

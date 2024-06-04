@@ -7,6 +7,8 @@ import { Account } from './domain/account/Account'
 import { init } from './init'
 import { GollumGit } from './domain/gollum_git/GollumGit'
 import { GollumApi } from './domain/gollum_api/GollumApi'
+import { LocalRepo } from './domain/local_repo/LocalRepo'
+import { env } from './env'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -62,6 +64,24 @@ app.whenReady().then(() => {
 
 	// IPC test
 	ipcMain.on('ping', () => console.log('pong'))
+
+	// IPC local(local)
+	ipcMain.handle('local:list', async (_) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getLocalRepoList()
+	})
+	ipcMain.handle('local:tree', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getTree(sub_dir)
+	})
+	ipcMain.handle('local:branch_list', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return await local_repo.getBranchList(sub_dir)
+	})
+	ipcMain.handle('local:checkout', async (_, sub_dir, branch_name) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		await local_repo.checkout(sub_dir, branch_name)
+	})
 
     // IPC gollum api(gapi)
 	ipcMain.handle('gapi:login-submit', async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))

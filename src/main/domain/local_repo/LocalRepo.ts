@@ -1,0 +1,86 @@
+import fs from 'node:fs'
+import { RepoBranchData, RepoData, RepoTreeData } from '../gollum_api/GollumApi'
+import simpleGit from 'simple-git'
+
+/**
+ * Class that contains all methods and attr to manipulate local repository
+ */
+
+export class LocalRepo {
+
+	protected local_path: string
+	protected ignored_files: string[]
+
+	public constructor (local_path: string) {
+		this.local_path = local_path
+		this.ignored_files = ['.git']
+	}
+
+
+ /**
+  * Get folder content from the specified local_path and sub_dir_path
+  * @param {string} sub_dir_path
+  * @returns {RepoTreeData[]}
+  */
+	public getTree (sub_dir_path: string = ''): RepoTreeData[] {
+		const dir_content = fs.readdirSync(this.makePath(sub_dir_path), {
+			withFileTypes: true
+		})
+
+		const out: RepoTreeData[] = []
+
+		for (const element of dir_content) {
+			if(this.ignored_files.indexOf(element.name) < 0) {
+				const tree_data: RepoTreeData = {
+					name: element.name,
+					type: element.isDirectory() ? 'tree' : 'blob'
+				}
+				out.push(tree_data)
+			}
+		}
+
+		return out
+	}
+
+	/**
+	 * Get all repo on local
+	 * @returns {RepoData[]}
+	 */
+	public getLocalRepoList (): RepoData[] {
+		const dir_content = fs.readdirSync(this.local_path)
+		const out: RepoData[] = []
+		for (const dir of dir_content) {
+			const child_dir = fs.readdirSync(this.makePath(dir))
+			if (child_dir.indexOf('.git') >= 0) {
+				out.push({repo_path: dir})
+			}
+		}
+		return out
+	}
+
+ /**
+  * Get all local branch from specified repo
+  * @param {string} sub_dir_path
+  * @returns {Promise<RepoBranchData[]>}
+  */
+	public async getBranchList (sub_dir_path: string): Promise<RepoBranchData[]> {
+		const simple_git = simpleGit(this.makePath(sub_dir_path))
+		const branches_details = await simple_git.branchLocal()
+		const branch_out:RepoBranchData[] = []
+		for (const branch of branches_details.all) {
+			const branch_data: RepoBranchData = { branch_name: branch }
+			branch_out.push(branch_data)
+		}
+		return branch_out
+	}
+
+	public async checkout (sub_dir_path: string, branch_name: string) {
+		const simple_git = simpleGit(this.makePath(sub_dir_path))
+		await simple_git.checkout(branch_name)
+	}
+
+
+	private makePath(path: string) {
+		return this.local_path + "/" + path
+	}
+}
