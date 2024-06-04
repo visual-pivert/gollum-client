@@ -11,5 +11,5 @@ document.addEventListener('new_project', () => {
     updateCurrentView('new_project')
 })
 
-export const show_tech_list = writable(false)
+// export const show_tech_list = writable(false)
 
