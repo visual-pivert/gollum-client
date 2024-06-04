@@ -25,7 +25,7 @@
     padding: {padding};
     background-color: var({bg_color});
     "
-	on:click
+	on:click|preventDefault
 	{disabled}
 >
 	<slot>

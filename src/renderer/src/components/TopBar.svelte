@@ -6,7 +6,7 @@
 	import ProjectDropdown from './project_dropdown/ProjectDropdown.svelte'
 </script>
 
-<div class="topbar">
+<div class="topbar relative z-50">
 	<div class="left">
 		<!-- <button id="menu-btn" on:click={() => (show_menu = !show_menu)}
 			><i class="ri-menu-line"></i></button

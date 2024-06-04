@@ -1,6 +1,7 @@
 <script>
 	import { openDropdown } from '../../event'
 	import Dropdown from '../Dropdown.svelte'
+	import { new_project } from '../new_project/store'
 	import { active_menu_dropdown } from './store'
 </script>
 
@@ -15,7 +16,12 @@
 	<div slot="content">
 		<ul>
 			<li class="rounded hover:bg-background4">
-				<a href="." class="px-3 py-2 flex">Nouveau Projet</a>
+				<a
+					href="."
+					class="px-3 py-2 flex"
+					on:click|preventDefault={() => document.dispatchEvent(new_project)}
+					>Nouveau Projet</a
+				>
 			</li>
 		</ul>
 	</div>
