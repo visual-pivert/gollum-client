@@ -76,19 +76,14 @@
 	</div>
 	<div class="commit-message-container flex flex-col gap-1 mb-4">
 		<label for="commit-message">
+			<span class="mb-1 block">Message:</span>
 			<textarea
 				bind:value={commit_message}
 				name="commit-message"
 				id="commit-message"
-				class="w-0 h-0 absolute"
+				class="w-full min-h-20 max-h-36 bg-transparent border focus:border-2 border-solid border-background3 rounded focus:border-blue-btn outline-none p-2"
 				on:focus={() => commitMessageOnfucus()}
 			></textarea>
-			<span class="mb-1 block">Message:</span>
-			<div class="commit-message-output">
-				<p id="message">
-					{commit_message}
-				</p>
-			</div>
 		</label>
 	</div>
 	<div class="button-container">
@@ -100,10 +95,9 @@
 				console.log(selected_files)
 				console.log(commit_message)
 			}}
-		>
-			Commit
-		</Buttons>
-		<Buttons disabled={nothing_checked} bg_color="--background3">Commit & amend</Buttons>
+			label="Commit"
+		/>
+		<Buttons disabled={nothing_checked} bg_color="--background3" label="Commit & amend" />
 	</div>
 </div>
 
@@ -132,30 +126,5 @@
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
-	}
-	.commit-message-output {
-		height: 100px;
-		padding: 5px 6px;
-		border: 1px solid var(--background3);
-		border-radius: var(--border-radius);
-	}
-	.commit-message-container textarea:focus ~ .commit-message-output {
-		border: 1px solid var(--blue);
-	}
-	.commit-message-container textarea:focus ~ .commit-message-output > #message::after {
-		display: inline;
-		content: '_';
-		animation: 1s infinite blink;
-	}
-	@keyframes blink {
-		0% {
-			opacity: 0;
-		}
-		50% {
-			opacity: 1;
-		}
-		100% {
-			opacity: 0;
-		}
 	}
 </style>
