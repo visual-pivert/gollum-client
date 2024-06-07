@@ -42,7 +42,7 @@ export class GollumGit {
         )
         const repo_name = repo_path.split('/').at(-1)
         const the_local_path = (local_path) ? local_path + '/' +`${repo_name}` : `${repo_name}`
-        await this.git_obj.clone(url, the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
+        await this.git_obj.clone(url, this.credentials['username'] + '/' + the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
     public async push(remote: string, branch_name: string) {

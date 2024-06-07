@@ -28,7 +28,9 @@
 		"electron-updater": "^6.1.7",
 		"node-fetch": "^3.3.2",
 		"remixicon": "^4.2.0",
-		"simple-git": "^3.24.0"
+		"simple-git": "^3.24.0",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7"
 	},
 	"devDependencies": {
 		"@electron-toolkit/eslint-config-prettier": "^2.0.0",
