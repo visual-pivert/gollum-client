@@ -136,5 +136,15 @@ export async function storeTree() {
 		}
 		project_tree.update(() => fetch_tree.datas)
 	}
+	project_tree.update((value) => sortFiles(value))
 	console.log(get(project_tree))
+}
+
+function sortFiles(files: any[]): any[] {
+	return files.sort((a, b) => {
+	  if (a.type === b.type) {
+		return a.name.localeCompare(b.name);
+	  }
+	  return a.type === 'tree' ? -1 : 1;
+	});
 }

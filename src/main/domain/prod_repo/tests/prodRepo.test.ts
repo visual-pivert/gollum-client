@@ -20,7 +20,7 @@ import { ProdRepo } from '../ProdRepo'
 // })
 
 test ('Prod repo mise en production', async () => {
-	const prod_repo = new ProdRepo('username/new_repo2', 'master')
+	const prod_repo = new ProdRepo('usr/wordpress', 'master')
 	await prod_repo.useExistingConfig('wordpress')
 	await prod_repo.cleanProdDir()
 	await prod_repo.putOnProduction()

@@ -49,10 +49,14 @@ export class LocalRepo {
 	public getLocalRepoList (): RepoData[] {
 		const dir_content = fs.readdirSync(this.local_path)
 		const out: RepoData[] = []
-		for (const dir of dir_content) {
-			const child_dir = fs.readdirSync(this.makePath(dir))
-			if (child_dir.indexOf('.git') >= 0) {
-				out.push({repo_path: dir})
+		for (const username of dir_content) {
+			const repos = fs.readdirSync(this.makePath(username))
+			for (const repo of repos) {
+				const the_repo = username + '/' + repo
+				const child_dir = fs.readdirSync(this.makePath(the_repo))
+				if (child_dir.indexOf('.git') >= 0) {
+					out.push({repo_path: the_repo})
+				}
 			}
 		}
 		return out

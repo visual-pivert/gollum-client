@@ -4,7 +4,7 @@ import { env } from '../../../env'
 
 test('Get local repo tree', () => {
     const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
-    console.log(local_repo.getTree('repo2'))
+    console.log(local_repo.getTree('username/repo2'))
 })
 
 test('Get local repo list', () => {
@@ -14,5 +14,5 @@ test('Get local repo list', () => {
 
 test('Get local branch list', async () => {
 	const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
-	console.log(await local_repo.getBranchList('repo2'))
+	console.log(await local_repo.getBranchList('username/repo2'))
 })
