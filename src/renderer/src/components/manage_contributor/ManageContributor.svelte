@@ -70,7 +70,7 @@
 	{/if}
 	<div class="relative">
 		<div
-			class="flex border-solid
+			class="flex border-solid h-8
                 {search_focus ? 'border-2 border-blue-btn' : 'border border-background3'}
                 items-center rounded"
 		>
