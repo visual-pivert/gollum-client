@@ -12,6 +12,7 @@ module.exports = {
       'blue-btn': '#1D619F',
       'green': '#69FF66',
       'yellow': '#FAFF00',
+      'red': '#ff3216',
       'font-color': '#E2E2E2',
       'font-color2': '#BDBDBD',
     },

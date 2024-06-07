@@ -12,6 +12,12 @@ export const selected_project: Writable<Repo | null> = writable(null)
 
 export const current_directory_path: Writable<string[]> = writable([''])
 
+export const new_project_data: Writable<{[key: string]: any}> = writable({
+    project_name: "",
+    readme: "",
+    contributors: []
+})
+
 interface Directory {
     type: string,
     name: string,
