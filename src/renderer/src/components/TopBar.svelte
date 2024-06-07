@@ -23,6 +23,7 @@
 			<div class="button-container">
 				<Button icon="ri-arrow-left-down-line" icon_color="var(--blue)" label="Pull" />
 				<Button icon="ri-arrow-right-up-line" icon_color="var(--green)" label="Push" />
+				<Button icon="ri-file-copy-line" icon_color="var(--font-color)" label="Clone" />
 			</div>
 		{/if}
 	</div>
