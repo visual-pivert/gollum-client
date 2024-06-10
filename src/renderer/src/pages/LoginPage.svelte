@@ -14,9 +14,6 @@
         <form class="form-group mb-5" method="POST" on:submit|preventDefault={ async (e) => {
             const form_values = FormUtil.getFormData(e.target)
             const login_api_reponse = await window.api.loginSubmit(form_values)
-			if (login_api_reponse["datas"]){
-				RouteUtil.redirectTo('index-page')
-			}
             console.log("API reponse: " + JSON.stringify(login_api_reponse))
         }}>
             <div class="mb-6">
@@ -48,5 +45,5 @@
         max-width: 400px;
         padding: 10px;
     }
-
+    
 </style>

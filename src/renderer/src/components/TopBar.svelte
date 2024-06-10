@@ -1,182 +1,29 @@
 <script>
-	// import { afterUpdate } from 'svelte'
-	import {
-		active_branch_dropdown,
-		active_project_dropdown,
-		current_directory,
-		// current_view_path,
-		cloned_project_list,
-		not_cloned_project_list,
-		branch_list,
-		current_branch,
-		current_project,
-		storeClonedListProject,
-
-		storeNotClonedListProject,
-
-		storeBranchList,
-
-		storeTree,
-
-		storeCurrentProject,
-
-		storeCurrentBranch,
-		project_tree_path,
-
-		is_local_repo
-
-
-
-
-
-
-
-		// somethingIsOpen
-	} from '../store'
-
-	import { openDropdown, resetCurrentDirectoryPath } from '../event'
-
+	import { selected_project } from '../store'
 	import Button from './Buttons.svelte'
-	import Dropdown from './Dropdown.svelte'
-	import { onMount } from 'svelte'
-
-	import { storeLoggedUser } from '../store'
-
-	// const projects = $project_list.map((project) => project.name)
-	// const projects = ['project1']
-	// const branches = ['branch1', 'branch2', 'brnach3', 'branch4']
-
-	// $: show_branches = $active_branch_dropdown
-	// $: show_projects = $active_project_dropdown
-
-	// afterUpdate(() => {
-	// 	// console.log($somethingIsOpen)
-	// })
-
-	onMount(async () => {
-		await storeLoggedUser()
-	})
-
-	// fire lorsque le dropdown qui liste les projets est clicked
-	async function projectDropdownClicked() {
-		openDropdown(active_project_dropdown)
-		await storeClonedListProject()
-		await storeNotClonedListProject()
-	}
-
-	// fire lorsque un projet non clone est clicked
-	async function notClonedUniqueProjectClicked(project) {
-		is_local_repo.update(() => false)
-		uniqueProjectClicked(project)
-	}
-
-	async function clonedUniqueProjectClicked(project) {
-		is_local_repo.update(() => true)
-		uniqueProjectClicked(project)
-	}
-
-	async function uniqueProjectClicked(project) {
-		await storeCurrentProject(project)
-		await storeBranchList()
-		current_branch.update(() => $branch_list[0])
-		await storeTree()
-	}
-
+	import BranchDropdown from './branch_dropdown/BranchDropdown.svelte'
+	import MenuDropdown from './menu_dropdown/MenuDropdown.svelte'
+	import ProjectDropdown from './project_dropdown/ProjectDropdown.svelte'
 </script>
 
-<!-- <svelte:document on:click={closeAllDropdown} /> -->
-
-<div class="topbar">
+<div class="topbar relative z-50">
 	<div class="left">
-		<button id="menu-btn"><i class="ri-menu-line"></i></button>
+		<!-- <button id="menu-btn" on:click={() => (show_menu = !show_menu)}
+			><i class="ri-menu-line"></i></button
+		> -->
+		<MenuDropdown />
 		<button id="reload-btn"><i class="ri-restart-line"></i></button>
 		<div class="dropdown-container">
-			<!-- <Button label="Project" icon2="ri-arrow-down-s-line" bg_color="transparent" />
-			<Dropdown>
-				<ul>
-					{#each projects as project}
-						<li>{project}</li>
-					{/each}
-
-				</ul>
-			</Dropdown> -->
-
-			<Dropdown
-				label={$current_project ? $current_project.repo_path : 'Project'}
-				show_content={$active_project_dropdown}
-				on:click={ async () => { await projectDropdownClicked() }}
-			>
-				<div class="dropdown-project" slot="content">
-					<div>
-						<span class="div-title">Projets local:</span>
-						<ul>
-							{#each $cloned_project_list as project}
-								<li class="rounded hover:bg-background4">
-									<a href="." class="px-3 py-2 flex"
-										on:click|preventDefault={ async () => {
-											await resetCurrentDirectoryPath(project.repo_path)
-											await clonedUniqueProjectClicked(project)
-										}}
-									>
-										<span>{project.repo_path}</span>
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-					<div>
-						<span class="div-title">Projets non clonés:</span>
-						<ul>
-							{#each $not_cloned_project_list as project}
-								<li class="rounded hover:bg-background4">
-									<a href="." class="px-3 py-2 flex" on:click|preventDefault={ async () => {
-										await resetCurrentDirectoryPath(project.repo_path)
-										await notClonedUniqueProjectClicked(project)
-									}}>
-										<span>{project.repo_path}</span>
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				</div>
-			</Dropdown>
-			{#if $current_project}
-				<Dropdown
-					label={$current_branch.branch_name}
-					icon="ri-git-branch-line"
-					show_content={$active_branch_dropdown}
-					on:click={ async () => {
-						openDropdown(active_branch_dropdown)
-						await storeBranchList()
-					}}
-				>
-					<div slot="content">
-						<ul>
-							{#each $branch_list as branch}
-								<li class="rounded hover:bg-background4">
-									<a
-										href="."
-										class="px-3 py-2 flex"
-										on:click|preventDefault={ async () => {
-											resetCurrentDirectoryPath($current_project.repo_path)
-											await storeCurrentBranch(branch)
-											await storeTree()
-										}}
-									>
-										{branch.branch_name}
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				</Dropdown>
+			<ProjectDropdown />
+			{#if $selected_project}
+				<BranchDropdown />
 			{/if}
 		</div>
-		{#if $current_project}
+		{#if $selected_project}
 			<div class="button-container">
 				<Button icon="ri-arrow-left-down-line" icon_color="var(--blue)" label="Pull" />
 				<Button icon="ri-arrow-right-up-line" icon_color="var(--green)" label="Push" />
+				<Button icon="ri-file-copy-line" icon_color="var(--font-color)" label="Clone" />
 			</div>
 		{/if}
 	</div>
@@ -205,20 +52,6 @@
 	.dropdown-container {
 		display: flex;
 		gap: 10px;
-	}
-	.dropdown-project {
-		width: 200px;
-	}
-	.dropdown-project > div:not(:last-child) {
-		margin-bottom: 12px;
-		padding-bottom: 4px;
-		border-bottom: 1px solid var(--background3);
-	}
-	.div-title {
-		display: inline-block;
-		font-size: 0.9em;
-		color: var(--font-color3);
-		margin-bottom: 4px;
 	}
 	.button-container {
 		display: flex;

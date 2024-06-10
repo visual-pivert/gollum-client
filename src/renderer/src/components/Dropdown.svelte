@@ -3,17 +3,14 @@
 
 	import { fade } from 'svelte/transition'
 
-	// import { afterUpdate, createEventDispatcher } from 'svelte'
-	// const dispatch = createEventDispatcher()
-
 	export let label = ''
 	export let icon = ''
 	export let contents = []
+	export let disable_arrow_icon = false
 
 	const dropdown_arrow = 'ri-arrow-down-s-line'
 
 	export let show_content = false
-	// console.log(show_content)
 	$: show = show_content
 </script>
 
@@ -23,7 +20,7 @@
 			classes="dropdown-btn"
 			{label}
 			{icon}
-			icon2={dropdown_arrow}
+			icon2={disable_arrow_icon ? '' : dropdown_arrow}
 			bg_color="transparent"
 			on:click
 		/>
@@ -54,6 +51,7 @@
 <style>
 	.dropdown {
 		position: relative;
+		max-width: 120px;
 	}
 	.contents-container {
 		width: max-content;

@@ -19,6 +19,9 @@
 	--blue-btn: #1D619F;
 	--green: #69FF66;
 	--yellow: #FAFF00;
+	--red: #ff3216;
+
+	--folder-color: #dfc225;
 
 	--border-radius: 5px;
 	--bar-thinkness: .4in;
@@ -97,7 +100,6 @@ a:hover {
 ::-webkit-scrollbar-thumb {
 	border-radius: 3px;
 	background-color: var(--background2);
-	/* background-color: var(--color); */
 	opacity: 0;
 }
 

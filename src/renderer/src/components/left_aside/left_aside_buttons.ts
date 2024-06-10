@@ -2,7 +2,7 @@
 import { get } from "svelte/store"
 import { updateCurrentView } from "../../event"
 import ProjectPage from "../ProjectPage.svelte"
-import SettingsPage from "../SettingsPage.svelte"
+import SettingsPage from "../settings_page/SettingsPage.svelte"
 import { RightButtons } from "../right_aside/right_aside_buttons"
 import { current_view } from "../../store"
 
