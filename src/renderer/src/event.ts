@@ -49,15 +49,11 @@ export function activeAsideComponent(component: string): void {
 export function resetCurrentDirectoryPath(folder: string) {
     current_directory_path.set([folder])
 }
-export function updateCurrentDirectoryPath(folder: string, level: number = 1) {
-    if(get(current_directory_path).length - 1 < level) {
-        current_directory_path.update(() => [...get(current_directory_path), folder])     
-    } else {
-        get(current_directory_path)[level] = folder
-        current_directory_path.update(() => [...get(current_directory_path)])
-    }
+export function updateCurrentDirectoryPath(folder: string) {
+    current_directory_path.update(() => [...get(current_directory_path), folder])   
 }
 
 export function backToPreviewsDirectory() {
     get(current_directory_path).pop()
+    current_directory_path.set([...get(current_directory_path)])
 }
