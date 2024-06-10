@@ -20,30 +20,32 @@
 				{/each}
 			</div>
 			<div class="content">
-				<table class="w-full">
+				<table class="w-full table-fixed">
 					<thead>
 						<tr class="bg-background4">
-							<th class="py-3 px-4 text-left w-1/3">Nom</th>
-							<th class="py-3 px-4 text-left">Message du dernier commit</th>
-							<th class="py-3 px-4 text-right">Date du dernier commit</th>
+							<th class="py-3 px-4 text-left w-5/12">Nom</th>
+							<th class="py-3 px-4 text-left w-4/12">Commit</th>
+							<th class="py-3 px-4 text-right w-3/12">Date</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr class="hidden">
-							<td colspan="3" class="py-3 px-4 text-left w-1/3">sssssss</td>
+							<td colspan="3" class="py-3 px-4 text-left">sssssss</td>
 						</tr>
 						{#each Object.entries($current_directory) as item}
 							<tr class="hover:bg-background4">
-								<td class="py-3 px-4 text-left w-1/3">
-									<div class="name-cell">
+								<td class="py-3 px-4 text-left w-5/12">
+									<div class="name-cell w-full overflow-hidden overflow-ellipsis">
 										{#if item[1].type == 'folder'}
-											<i class="ri-folder-fill"></i>
+											<i
+												class="ri-folder-fill text-folder-color text-lg leading-none"
+											></i>
 										{:else}
-											<i class="ri-file-3-line"></i>
+											<i class="ri-file-3-line text-lg leading-none"></i>
 										{/if}
 										<a
 											href="."
-											class="text-font-color hover:text-blue hover:underline"
+											class="text-font-color hover:text-blue hover:underline text-nowrap"
 											on:click|preventDefault={() => {
 												updateCurrentDirectoryPath(item[1].name)
 												console.log($current_directory_path)
@@ -51,14 +53,20 @@
 										>
 									</div>
 								</td>
-								<td class="py-3 px-4 text-left">
-									<div class="text-font-color2">
-										{'...'}
+								<td class="py-3 px-4 text-left w-4/12 overflow-hidden">
+									<div
+										class="text-font-color w-full overflow-hidden overflow-ellipsis"
+									>
+										<span class="text-nowrap"
+											>{'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'}</span
+										>
 									</div>
 								</td>
-								<td class="py-3 px-4 text-right">
-									<div class="text-font-color2">
-										{'...'}
+								<td class="py-3 px-4 text-right w-3/12">
+									<div
+										class="text-font-color2 w-full overflow-hidden overflow-ellipsis"
+									>
+										<span class="text-nowrap">{'10 months ago'}</span>
 									</div>
 								</td>
 							</tr>
@@ -117,10 +125,4 @@
 		align-items: center;
 		gap: 10px;
 	}
-	.name-cell > i {
-		font-size: 1.2em;
-	}
-	/* .name-cell > a {
-		color: var(--font-color);
-	} */
 </style>

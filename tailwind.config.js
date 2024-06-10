@@ -15,6 +15,7 @@ module.exports = {
       'red': '#ff3216',
       'font-color': '#E2E2E2',
       'font-color2': '#BDBDBD',
+      'folder-color': '#dfc225'
     },
     extend: {},
   },
