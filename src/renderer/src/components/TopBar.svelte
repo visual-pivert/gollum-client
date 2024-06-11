@@ -8,9 +8,6 @@
 
 <div class="topbar relative z-50">
 	<div class="left">
-		<!-- <button id="menu-btn" on:click={() => (show_menu = !show_menu)}
-			><i class="ri-menu-line"></i></button
-		> -->
 		<MenuDropdown />
 		<button id="reload-btn"><i class="ri-restart-line"></i></button>
 		<div class="dropdown-container">

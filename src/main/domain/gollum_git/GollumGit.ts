@@ -23,10 +23,10 @@ import { env } from "../../env";
 export class GollumGit {
 
     protected path = ''
-    protected config = {} 
+    protected config = {}
     protected git_obj:SimpleGit
     protected credentials = {}
-    
+
     public constructor(path: string, credentials: {username: string, password: string}) {
         this.path = path
         this.config = { binary: 'git' }
@@ -36,13 +36,13 @@ export class GollumGit {
 
     public async clone(repo_path: string, local_path: string) {
         const url = this.makeRemote(
-            this.credentials['username'], 
-            this.credentials['password'], 
+            this.credentials['username'],
+            this.credentials['password'],
             repo_path
         )
         const repo_name = repo_path.split('/').at(-1)
         const the_local_path = (local_path) ? local_path + '/' +`${repo_name}` : `${repo_name}`
-        await this.git_obj.clone(url, the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
+        await this.git_obj.clone(url, this.credentials['username'] + '/' + the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
     public async push(remote: string, branch_name: string) {
@@ -67,9 +67,9 @@ export class GollumGit {
 
     public async commit(message: string, file_or_dir_to_add: [], amend = false) {
         this.git_obj.add(file_or_dir_to_add)
-        let commit = await this.git_obj.commit(message)
-        if (amend) 
-            commit = await this.git_obj.commit(message, ['--amend'])
+        await this.git_obj.commit(message)
+        if (amend)
+            await this.git_obj.commit(message, ['--amend'])
     }
 
     public async checkout(branch: string){

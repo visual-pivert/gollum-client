@@ -1,6 +1,7 @@
 <script>
+	import { afterUpdate } from 'svelte'
 	import { openDropdown } from '../../event'
-	import { new_project_data } from '../../store'
+	import { close_function_overlays, new_project_data } from '../../store'
 	import { search_result_contributor } from './store'
 
 	const users = [

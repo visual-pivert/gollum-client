@@ -1,22 +1,24 @@
 <script>
-	import { updateCurrentDirectoryPath } from '../event'
-	import { current_directory, current_directory_path } from '../store'
-
-	// const current_directory = [
-	// 	{ name: 'src', commit_message: 'initial commit', date: '4 months ago', type: 'folder' },
-	// 	{ name: 'build', commit_message: 'initial commit', date: '4 months ago', type: 'folder' },
-	// 	{ name: 'README.md', commit_message: 'initial commit', date: '4 months ago', type: 'file' }
-	// ]
-	// $: current_directory = $current_directory
-	// $: current_path = $current_directory_path
+	import { updateCurrentDirectoryPath } from '../../event'
+	import { current_directory, current_directory_path, selected_branch, selected_project } from '../../store'
+	import { defineBranch } from '../branch_dropdown/store'
+	import { defineDir } from './store'
 </script>
 
 <div class="project-wrapper">
 	{#if $current_directory}
 		<div class="porject-container container mb-3 p-4">
 			<div class="breadcrumbs frame">
-				{#each $current_directory_path as step}
-					<a href="." on:click={() => {}}>{step}<i class="ri-arrow-right-s-line"></i></a>
+				{#each $current_directory_path as step,index}
+					<a href="." on:click|preventDefault={async () => {
+						current_directory_path.update(() => {
+							if (index === 0) {
+								return [$selected_project.repo_path]
+							}
+							return $current_directory_path.slice(0, index+1)
+						})
+						await defineDir()
+					}}>{step}<i class="ri-arrow-right-s-line"></i></a>
 				{/each}
 			</div>
 			<div class="content">
@@ -32,11 +34,11 @@
 						<tr class="hidden">
 							<td colspan="3" class="py-3 px-4 text-left">sssssss</td>
 						</tr>
-						{#each Object.entries($current_directory) as item}
+						{#each $current_directory as item}
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-5/12">
 									<div class="name-cell w-full overflow-hidden overflow-ellipsis">
-										{#if item[1].type == 'folder'}
+										{#if item.type == 'tree'}
 											<i
 												class="ri-folder-fill text-folder-color text-lg leading-none"
 											></i>
@@ -46,10 +48,10 @@
 										<a
 											href="."
 											class="text-font-color hover:text-blue hover:underline text-nowrap"
-											on:click|preventDefault={() => {
-												updateCurrentDirectoryPath(item[1].name)
-												console.log($current_directory_path)
-											}}>{item[1].name}</a
+											on:click|preventDefault={async() => {
+												updateCurrentDirectoryPath(item.name)
+												await defineDir()
+											}}>{item.name}</a
 										>
 									</div>
 								</td>

@@ -1,29 +1,52 @@
 import axios from 'axios'
 import { env } from '../../env'
 import { GolSession } from '../session/GolSession'
+import { AccessData, GollumApi, GollumApiResponse } from '../gollum_api/GollumApi'
+
+type UserCredentials = {
+	username: string,
+	access_token: string,
+	password: string
+}
 
 export class Auth {
-	public static async login(username: string, password: string) {
-		// appele de l'api
-		const login_endpoint = env['API_DOMAIN'] + '/api/access'
-		const data = { username: username, password: password }
-		const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-        const gol_session = new GolSession(env['VAR_PATH'])
-        let api_out = {}
-		try {
-			const fetched_value = await axios({
-				method: 'POST',
-				headers: headers,
-				data: data,
-				url: login_endpoint
-			})
-			api_out = fetched_value.data
-            gol_session.addOrModify({AUTH_USER: api_out["username"], AUTH_TOKEN: api_out["access_token"]})
+	/**
+	 * Take user credentials, add it in session, and return an object (response from fetch) or null
+	 * @param {string} username
+	 * @param {string} password
+	 * @returns {Promise<GollumApiResponse<AccessData> | null>}
+	 */
+	public static async login(username: string, password: string): Promise<GollumApiResponse<AccessData> | null> {
+		const gollum_api = await GollumApi.access(username, password)
+
+		if (gollum_api["datas"]) {
+			const {username, access_token} = gollum_api["datas"]
+			const gol_session = new GolSession(env['VAR_PATH'])
+			gol_session.addOrModify({AUTH_USER: username, AUTH_TOKEN: access_token, AUTH_PASS: password})
             gol_session.persist()
-		} catch (error: any) {
-			api_out = error.response.data
+			return gollum_api
 		}
-		return api_out
+		return null
+	}
+
+	/**
+	 * Get logged user (user from the sesion)
+	 * @returns {Promise<UserCredentials | null>}
+	 */
+	public static async getLoggedUser ():  Promise<UserCredentials | null>{
+		const gol_session = new GolSession(env['VAR_PATH'])
+		const auth_user = gol_session.get('AUTH_USER') as string
+		const auth_token = gol_session.get('AUTH_TOKEN') as string
+		const auth_pass = gol_session.get('AUTH_PASS') as string
+		if (auth_user && auth_token) {
+			const out_data: UserCredentials = {
+				access_token: auth_token,
+				username: auth_user,
+				password: auth_pass
+			}
+			return out_data
+		}
+		return null
 	}
 
 	public static logout(): string {

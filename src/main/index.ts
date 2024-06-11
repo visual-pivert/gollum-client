@@ -7,6 +7,8 @@ import { Account } from './domain/account/Account'
 import { init } from './init'
 import { GollumGit } from './domain/gollum_git/GollumGit'
 import { GollumApi } from './domain/gollum_api/GollumApi'
+import { LocalRepo } from './domain/local_repo/LocalRepo'
+import { env } from './env'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -63,8 +65,27 @@ app.whenReady().then(() => {
 	// IPC test
 	ipcMain.on('ping', () => console.log('pong'))
 
+	// IPC local(local)
+	ipcMain.handle('local:list', async (_) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getLocalRepoList()
+	})
+	ipcMain.handle('local:tree', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getTree(sub_dir)
+	})
+	ipcMain.handle('local:branch_list', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return await local_repo.getBranchList(sub_dir)
+	})
+	ipcMain.handle('local:checkout', async (_, sub_dir, branch_name) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		await local_repo.checkout(sub_dir, branch_name)
+	})
+
     // IPC gollum api(gapi)
-	ipcMain.handle('gapi:login-submit',async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
+	ipcMain.handle('gapi:login-submit', async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
+	ipcMain.handle('gapi:logged-user', async (_) => await Auth.getLoggedUser())
     ipcMain.handle('gapi:signup-submit', async (_, form_data) => await Account.createAccount(form_data['username'], form_data['password'], form_data['cpassword'], form_data['email']))
 
     ipcMain.handle('gapi:tree', async (_, access_token, repo_path, branch, tree_path) => {
@@ -82,7 +103,23 @@ app.whenReady().then(() => {
             return error.message
         }
     })
-    
+
+	ipcMain.handle('gapi:list', async (_, access_token) => {
+		try {
+			return await GollumApi.listRepo(access_token)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:branches', async (_, access_token, repo_path) => {
+		try {
+			return await GollumApi.listBranches(access_token, repo_path)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
 
     //IPC git
     ipcMain.handle('git:commit', async (_, basedir, credentials, message, file_or_dir_to_add, amend) => {
@@ -162,7 +199,7 @@ app.whenReady().then(() => {
         } catch (error: any) {
             return error.message
         }
-    }) 
+    })
 
 	createWindow()
 
