@@ -12,4 +12,14 @@ export async function defineDir () {
 		getted_current_directory = await window.api.apiRepoTree(logged_user.access_token, get(selected_project).repo_path, get(selected_branch), get(current_directory_path).slice(1).join('/'))
 		current_directory.update(()=>getted_current_directory.datas)
 	}
+	current_directory.update((old) => sortFiles(old))
+}
+
+function sortFiles(files: any[]): any[] {
+	return files.sort((a, b) => {
+	  if (a.type === b.type) {
+		return a.name.localeCompare(b.name);
+	  }
+	  return a.type === 'tree' ? -1 : 1;
+	});
 }
