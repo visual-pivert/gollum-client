@@ -15,11 +15,11 @@ export function openDropdown(writable: Writable<Boolean>, onOpen: () => void = (
         writable.update(() => false)
     } else {
         closeAllDropdown()
-        
+
         close_function_overlays.update(() => [...get(close_function_overlays), () => writable.set(false) ])
 
-        onOpen()  
-        writable.update((value) => !value)   
+        onOpen()
+        writable.update((value) => !value)
     }
 }
 
@@ -39,18 +39,18 @@ export function activeAsideComponent(component: string): void {
         active_aside_component.update(() => component)
     } else {
         active_aside_component.update(() => '')
-    }  
+    }
 }
 
 // export function changeCurrentTree(path: string): void {
-    
+
 // }
 
 export function resetCurrentDirectoryPath(folder: string) {
     current_directory_path.set([folder])
 }
 export function updateCurrentDirectoryPath(folder: string) {
-    current_directory_path.update(() => [...get(current_directory_path), folder])   
+    current_directory_path.update(() => [...get(current_directory_path), folder])
 }
 
 export function backToPreviewsDirectory() {
