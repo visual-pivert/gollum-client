@@ -214,7 +214,6 @@
 	}
 	.commits-container {
 		flex-grow: 1;
-		min-height: 100%;
 	}
 	.commits-container::-webkit-scrollbar-thumb {
 		background-color: var(--background3);

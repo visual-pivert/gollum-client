@@ -48,6 +48,7 @@
 	}
 	.dropdown-container {
 		display: flex;
+		align-items: center;
 		gap: 10px;
 	}
 	.button-container {

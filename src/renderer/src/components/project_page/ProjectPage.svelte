@@ -1,6 +1,11 @@
 <script>
 	import { updateCurrentDirectoryPath } from '../../event'
-	import { current_directory, current_directory_path, selected_branch, selected_project } from '../../store'
+	import {
+		current_directory,
+		current_directory_path,
+		selected_branch,
+		selected_project
+	} from '../../store'
 	import { defineBranch } from '../branch_dropdown/store'
 	import { defineDir } from './store'
 </script>
@@ -8,17 +13,23 @@
 <div class="project-wrapper">
 	{#if $current_directory}
 		<div class="porject-container container mb-3 p-4">
-			<div class="breadcrumbs frame">
-				{#each $current_directory_path as step,index}
-					<a href="." on:click|preventDefault={async () => {
-						current_directory_path.update(() => {
-							if (index === 0) {
-								return [$selected_project.repo_path]
-							}
-							return $current_directory_path.slice(0, index+1)
-						})
-						await defineDir()
-					}}>{step}<i class="ri-arrow-right-s-line"></i></a>
+			<div class="breadcrumbs frame overflow-auto">
+				{#each $current_directory_path as step, index}
+					<a
+						href="."
+						on:click|preventDefault={async () => {
+							current_directory_path.update(() => {
+								if (index === 0) {
+									return [$selected_project.repo_path]
+								}
+								return $current_directory_path.slice(0, index + 1)
+							})
+							await defineDir()
+						}}
+					>
+						<span class="hover:text-blue hover:underline">{step}</span>
+						<i class="ri-arrow-right-s-line"></i>
+					</a>
 				{/each}
 			</div>
 			<div class="content">
@@ -37,7 +48,7 @@
 						{#each $current_directory as item}
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-5/12">
-									<div class="name-cell w-full overflow-hidden overflow-ellipsis">
+									<div class="name-cell w-full">
 										{#if item.type == 'tree'}
 											<i
 												class="ri-folder-fill text-folder-color text-lg leading-none"
@@ -47,11 +58,11 @@
 										{/if}
 										<a
 											href="."
-											class="text-font-color hover:text-blue hover:underline text-nowrap"
-											on:click|preventDefault={async() => {
+											class="text-font-color hover:text-blue hover:underline text-nowrap w-full overflow-hidden overflow-ellipsis"
+											on:click|preventDefault={async () => {
 												updateCurrentDirectoryPath(item.name)
 												await defineDir()
-											}}>{item.name}</a
+											}}><span>{item.name}</span></a
 										>
 									</div>
 								</td>
@@ -126,5 +137,12 @@
 		display: flex;
 		align-items: center;
 		gap: 10px;
+	}
+
+	.breadcrumbs::-webkit-scrollbar {
+		height: var(--scrollbar-thinkness);
+	}
+	.breadcrumbs::-webkit-scrollbar-thumb {
+		background-color: var(--background3);
 	}
 </style>
