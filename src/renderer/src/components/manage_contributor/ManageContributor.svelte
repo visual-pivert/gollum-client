@@ -1,5 +1,7 @@
 <script>
+	import { openDropdown } from '../../event'
 	import { new_project_data } from '../../store'
+	import { search_result_contributor } from './store'
 
 	const users = [
 		{ username: 'Baba' },
@@ -22,10 +24,13 @@
 	}, [])
 
 	function addContributor(user) {
-		if (!$new_project_data.contributors.includes(user)) {
+		if (
+			!$new_project_data.contributors.some(
+				(contributor) => contributor.username == user.username
+			)
+		) {
 			$new_project_data.contributors = [...$new_project_data.contributors, user]
 		}
-		// console.log($new_project_data.contributors)
 	}
 
 	function removeContributor(user) {
@@ -82,8 +87,9 @@
 				type="text"
 				name=""
 				id="search"
-				class="flex-grow bg-transparent outline-none w-full h-8 p-2"
+				class="flex-grow bg-transparent outline-none w-full h-8 p-2 dropdown-btn"
 				on:focus={() => {
+					openDropdown(search_result_contributor)
 					search_focus = true
 				}}
 				on:blur={() => {
@@ -91,7 +97,7 @@
 				}}
 			/>
 		</div>
-		{#if to_search && result.length > 0}
+		{#if to_search && result.length > 0 && $search_result_contributor}
 			<div
 				class="p-2 bg-background2 border border-solid border-background3 rounded absolute w-full"
 			>
@@ -102,11 +108,8 @@
 								href="."
 								class="p-2 block"
 								on:click|preventDefault={() => {
-									search_focus = true
 									addContributor(user)
 									to_search = ''
-									result = []
-									search_focus = false
 								}}>{user.username}</a
 							>
 						</li>
