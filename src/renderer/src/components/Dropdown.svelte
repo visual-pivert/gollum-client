@@ -38,16 +38,6 @@
 	{/if}
 </div>
 
-<!-- <div>
-	<slot>
-		<ul>
-			{#each contents as item}
-				<li>{item}</li>
-			{/each}
-		</ul>
-	</slot>
-</div> -->
-
 <style>
 	.dropdown {
 		position: relative;

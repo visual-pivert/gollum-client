@@ -1,45 +1,75 @@
 <script>
-	// @ts-nocheck
-
-	import { openDropdown, resetCurrentDirectoryPath } from '../../event'
-
-	import {
-		current_directory,
-		local_project_list,
-		not_cloned_project_list,
-		selected_project,
-		is_local_project
-	} from '../../store'
 	import Dropdown from '../Dropdown.svelte'
-	import { active_project_dropdown, openProjectDropdown, defineProject } from './store'
+	import { active_project_dropdown } from './store'
+	import { openDropdown } from '../../event'
+	import { rx_is_local_project, rx_selected_project } from './model'
+	import { onDestroy, onMount } from 'svelte'
+
+	// Vars
+	let local_project_list
+	let not_cloned_project_list
+	let selected_project //rx
+
+	// functions
+	const fetchLocalProject = async () => {
+		const lpl = [
+			{ repo_path: 'username/rp1' },
+			{ repo_path: 'username/rp2' },
+			{ repo_path: 'username/rp3' }
+		]
+		return lpl
+	}
+
+	const fetchNotClonedProject = async () => {
+		const ncpl = [
+			{ repo_path: 'username/repo1' },
+			{ repo_path: 'username/repo2' },
+			{ repo_path: 'username/repo3' }
+		]
+		return ncpl
+	}
+
+	// NOT pure function
+	const defineProject = (project) => {
+		rx_selected_project.next(project)
+	}
+
+	const defineIsLocalProject = (is_local) => {
+		rx_is_local_project.next(is_local)
+	}
+
+	const onDropdownOpen = async () => {
+		local_project_list = await fetchLocalProject()
+		not_cloned_project_list = await fetchNotClonedProject()
+	}
+
+	// lifecycles
+	let subscriber
+	onMount(() => {
+		subscriber = rx_selected_project.subscribe((value) => {selected_project = value})
+	})
+
+	onDestroy(() => {
+		subscriber.unsubscribe()
+	})
 
 	$: show = $active_project_dropdown
 </script>
 
 <Dropdown
-	label={$selected_project ? $selected_project.repo_path : 'Project'}
+	label={selected_project ? selected_project.repo_path : 'Project'}
 	show_content={show}
-	on:click={() => {
-		openDropdown(active_project_dropdown, openProjectDropdown)
+	on:click={async() => {
+		openDropdown(active_project_dropdown, await onDropdownOpen())
 	}}
-	>selected_project
+>
 	<div class="dropdown-project" slot="content">
 		<div>
 			<span class="div-title">Projets local:</span>
 			<ul>
-				{#each $local_project_list as project}
+				{#each local_project_list as project}
 					<li class="rounded hover:bg-background4">
-						<a
-							href="."
-							class="px-3 py-2 flex"
-							on:click|preventDefault={async () => {
-								is_local_project.update(() => true)
-								await defineProject(project)
-								// current_directory.update(
-								// 	() => $selected_project.active_branch.contents
-								// )
-							}}
-						>
+						<a href="." class="px-3 py-2 flex" on:click|preventDefault={async()=> {defineIsLocalProject(true); defineProject(project)}}>
 							<span>{project.repo_path}</span>
 						</a>
 					</li>
@@ -49,16 +79,9 @@
 		<div>
 			<span class="div-title">Projets non clonés:</span>
 			<ul>
-				{#each $not_cloned_project_list as project}
+				{#each not_cloned_project_list as project}
 					<li class="rounded hover:bg-background4">
-						<a
-							href="."
-							class="px-3 py-2 flex"
-							on:click|preventDefault={async () => {
-								is_local_project.update(() => false)
-								await defineProject(project)
-							}}
-						>
+						<a href="." class="px-3 py-2 flex" on:click|preventDefault={async()=> {defineIsLocalProject(false); defineProject(project)}}>
 							<span>{project.repo_path}</span>
 						</a>
 					</li>
