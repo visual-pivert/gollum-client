@@ -74,7 +74,10 @@
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
 	}
-	/* button.border {
-		border: 1px solid var(--font-color2);
-	} */
+	button.border {
+		border: 1px solid var(--background3);
+	}
+	button.border-blue {
+		border: 2px solid var(--blue-btn);
+	}
 </style>
