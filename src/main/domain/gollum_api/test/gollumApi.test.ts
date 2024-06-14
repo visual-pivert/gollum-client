@@ -86,3 +86,9 @@ test ('Get users', async () => {
 //     const out = await GollumApi.blobRepo(access_token, 'username/new_repo2', 'master', 'blob')
 //     console.log(JSON.stringify(out))
 // })
+
+test('List commit', async () => {
+	const access_token = 'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzOTUwOCwgIl90aW1lc3RhbXAiOiAxNzE4MzQ1NzI0fQ=='
+	const out = await GollumApi.listCommit(access_token, 'username/new_repo2', 'master')
+	console.log(out)
+})

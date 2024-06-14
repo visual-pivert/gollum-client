@@ -8,25 +8,28 @@
 	// Vars
 	let local_project_list
 	let not_cloned_project_list
+	let logged_user
 	let selected_project //rx
 
 	// functions
 	const fetchLocalProject = async () => {
-		const lpl = [
+		let lpl = [
 			{ repo_path: 'username/rp1' },
 			{ repo_path: 'username/rp2' },
 			{ repo_path: 'username/rp3' }
 		]
+		lpl = await window.api.localRepoList()
 		return lpl
 	}
 
 	const fetchNotClonedProject = async () => {
-		const ncpl = [
+		let ncpl = [
 			{ repo_path: 'username/repo1' },
 			{ repo_path: 'username/repo2' },
 			{ repo_path: 'username/repo3' }
 		]
-		return ncpl
+		ncpl = await window.api.apiRepoList(logged_user.access_token)
+		return ncpl.datas
 	}
 
 	// NOT pure function
@@ -45,7 +48,8 @@
 
 	// lifecycles
 	let subscriber
-	onMount(() => {
+	onMount( async () => {
+		logged_user = await window.api.getLoggedUser()
 		subscriber = rx_selected_project.subscribe((value) => {selected_project = value})
 	})
 

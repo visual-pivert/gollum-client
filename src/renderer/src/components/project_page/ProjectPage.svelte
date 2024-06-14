@@ -9,82 +9,55 @@
 	let selected_project //rx
 	let current_file_manager
 	let current_path_array = []
+	let logged_user
 
 	// pure functions
 	const fetchLocalFileManager = async (project, branch, subdir = '') => {
-		const mock_file_manager = [
-			[
-				{ name: subdir + 'local_file1', type: 'blob' },
-				{ name: subdir + 'local_file2', type: 'blob' },
-				{ name: subdir + 'local_file3', type: 'blob' },
-				{ name: subdir + 'local_dir4', type: 'tree' },
-				{ name: subdir + 'local_dir5', type: 'tree' },
-				{ name: subdir + 'local_dir6', type: 'tree' }
-			],
-			[
-				{ name: subdir + 'local_f1', type: 'blob' },
-				{ name: subdir + 'local_f2', type: 'blob' },
-				{ name: subdir + 'local_f3', type: 'blob' },
-				{ name: subdir + 'local_d4', type: 'tree' },
-				{ name: subdir + 'local_d5', type: 'tree' },
-				{ name: subdir + 'local_d6', type: 'tree' }
-			]
-		]
-		function getRandomInt(max) {
-			return Math.floor(Math.random() * max)
-		}
-		if (project && branch) {
-			return mock_file_manager[getRandomInt(mock_file_manager.length)]
+		await window.api.localCheckout(project, branch)
+		const local_file_manager = await window.api.localRepoTree(subdir)
+		if (local_file_manager) {
+			return local_file_manager
 		} else {
 			return []
 		}
 	}
 
 	const fetchNotClonedFileManager = async (project, branch, subdir = '') => {
-		const mock_file_manager = [
-			[
-				{ name: subdir + 'not_file1', type: 'blob' },
-				{ name: subdir + 'not_file2', type: 'blob' },
-				{ name: subdir + 'not_file3', type: 'blob' },
-				{ name: subdir + 'not_dir4', type: 'tree' },
-				{ name: subdir + 'not_dir5', type: 'tree' },
-				{ name: subdir + 'not_dir6', type: 'tree' }
-			],
-			[
-				{ name: subdir + 'not_f1', type: 'blob' },
-				{ name: subdir + 'not_f2', type: 'blob' },
-				{ name: subdir + 'not_f3', type: 'blob' },
-				{ name: subdir + 'not_d4', type: 'tree' },
-				{ name: subdir + 'not_d5', type: 'tree' },
-				{ name: subdir + 'not_d6', type: 'tree' }
-			]
-		]
-		function getRandomInt(max) {
-			return Math.floor(Math.random() * max)
-		}
-		if (project && branch) {
-			return mock_file_manager[getRandomInt(mock_file_manager.length)]
+		const not_cloned_file_manager = await window.api.apiRepoTree(logged_user.access_token, project, branch, subdir)
+		if (not_cloned_file_manager) {
+			return not_cloned_file_manager.datas
 		} else {
 			return []
 		}
 	}
 
+	const sortFiles = (files) => {
+		return files.sort((a, b) => {
+			if (a.type === b.type) {
+				return a.name.localeCompare(b.name)
+			}
+			return a.type === 'tree' ? -1 : 1
+		})
+	}
+
 	// NOT pure function
 	const defineCurrentFileManager = async () => {
-		const cd = current_path_array ? current_path_array.join('/') : ''
+		let cd = current_path_array ? current_path_array.join('/') : ''
 		if (is_local_project) {
 			current_file_manager = await fetchLocalFileManager(
-				selected_project,
-				selected_branch,
+				selected_project.repo_path,
+				selected_branch.branch_name,
 				cd
 			)
 		} else {
+			const not_local_cd = current_path_array.slice(1).join('/')
 			current_file_manager = await fetchNotClonedFileManager(
-				selected_project,
-				selected_branch,
-				cd
+				selected_project.repo_path,
+				selected_branch.branch_name,
+				not_local_cd
 			)
 		}
+		current_file_manager = sortFiles(current_file_manager)
 	}
 
 	const defineCurrentPathArray = (array_path = null) => {
@@ -97,7 +70,8 @@
 
 	// Lifecycles
 	let subscribers
-	onMount(() => {
+	onMount( async () => {
+		logged_user = await window.api.getLoggedUser()
 		const is_local_project_sub = rx_is_local_project.subscribe(
 			(value) => (is_local_project = value)
 		)

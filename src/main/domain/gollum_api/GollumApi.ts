@@ -324,4 +324,17 @@ export class GollumApi {
         return api_out
     }
 
+	public static async listCommit (access_token: string, repo_path: string, branch: string) {
+		const list_commit_endpoint = GollumApi.domain + '/api/repo/log/' + repo_path + '/branch/' + branch
+		const headers = { 'Access-Token': access_token }
+		let api_out
+		try {
+			const fetched_value = await axios({ method: 'GET', headers: headers, url: list_commit_endpoint })
+			api_out = fetched_value.data
+		} catch (error: any) {
+			api_out = error.response.data
+		}
+		return api_out
+	}
+
 }

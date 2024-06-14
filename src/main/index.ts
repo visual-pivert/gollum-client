@@ -120,10 +120,18 @@ app.whenReady().then(() => {
 		}
 	})
 
+	ipcMain.handle('gapi:log', async (_, access_token, repo_path, branch) => {
+		try {
+			return await GollumApi.listCommit(access_token, repo_path, branch)
+		} catch (error : any) {
+			return error.message
+		}
+	})
+
 
     //IPC git
     ipcMain.handle('git:commit', async (_, basedir, credentials, message, file_or_dir_to_add, amend) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.commit(message, file_or_dir_to_add, amend)
             return "OK"
@@ -153,9 +161,9 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:clone', async(_, basedir, credentials, repo_path, local_path) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
-            await gollum_git.clone(repo_path, local_path)
+            await gollum_git.clone(env['REPO_LINK'] + '/' + repo_path, local_path)
             return "OK"
         } catch (error: any) {
             return error.message
@@ -163,7 +171,8 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:push', async (_, basedir, credentials, remote, branch_name) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+		console.log(env['LOCAL_REPO_PATH'] + '/' + basedir)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.push(remote, branch_name)
             return "OK"
@@ -173,7 +182,7 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:pull', async (_, basedir, credentials, remote, branch_name) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.pull(remote, branch_name)
             return "OK"
@@ -183,17 +192,17 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:status', async(_, basedir, credentials) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
-            return await gollum_git.status()
+			const status = await gollum_git.status()
+            return status
         } catch (error: any) {
             return error.message
         }
     })
 
     ipcMain.handle('git:log', async(_, basedir, credentials) => {
-        console.log(basedir, credentials)
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             return await gollum_git.log()
         } catch (error: any) {

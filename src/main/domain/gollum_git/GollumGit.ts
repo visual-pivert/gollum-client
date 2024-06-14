@@ -1,6 +1,7 @@
 
 import { SimpleGit, simpleGit } from "simple-git";
 import { env } from "../../env";
+import _ from 'lodash'
 
 // export class StatusType {
 //     public not_added: []
@@ -42,21 +43,26 @@ export class GollumGit {
         )
         const repo_name = repo_path.split('/').at(-1)
         const the_local_path = (local_path) ? local_path + '/' +`${repo_name}` : `${repo_name}`
-        await this.git_obj.clone(url, this.credentials['username'] + '/' + the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
+        this.git_obj.clone(url, this.credentials['username'] + '/' + the_local_path).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
     public async push(remote: string, branch_name: string) {
-        await this.git_obj.push(remote, branch_name).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
+        this.git_obj.push(remote, branch_name).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
     public async pull(remote: string, branch_name: string) {
-        return await this.git_obj.pull(remote, branch_name).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
+        this.git_obj.pull(remote, branch_name).then(() => console.log('finished')).catch((err) => console.error('failed: ', err))
     }
 
     public async status(): Promise<any> {
         // TODO: Mise en place d'une partie interface pour eviter qu'un objet inconnu ressort de cette fonction
         const status = await this.git_obj.status()
-        return status
+		const cloned_status = _.cloneDeep(status)
+
+		// Supprimer la méthode isClean du clone
+		delete cloned_status.isClean
+
+    	return cloned_status
     }
 
     public async log() {
@@ -67,8 +73,9 @@ export class GollumGit {
 
     public async commit(message: string, file_or_dir_to_add: [], amend = false) {
         this.git_obj.add(file_or_dir_to_add)
-        await this.git_obj.commit(message)
-        if (amend)
+		if (!amend)
+        	await this.git_obj.commit(message)
+        else
             await this.git_obj.commit(message, ['--amend'])
     }
 

@@ -1,103 +1,55 @@
 <script>
 	import { onMount, tick } from 'svelte'
 	import { fade } from 'svelte/transition'
-	import { rx_is_local_project } from './project_dropdown/model'
+	import { rx_is_local_project, rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
 
 	let commit_list = []
 	let is_local_project //rx
 	let selected_branch //rx
+	let selected_project //rx
+	let logged_user
 
-	const fetchLocalCommit = async () => {
-		const mocked_commit = [
-			{
-				message: 'message1',
-				hash: '1kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d1',
-				author_name: 'author1',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'message2',
-				hash: '2kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d2',
-				author_name: 'author2',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'message3',
-				hash: '3kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d3',
-				author_name: 'author3',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'message4',
-				hash: '4kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d4',
-				author_name: 'author4',
-				date: '3 weeks ago'
-			}
-		]
-		let commit
-		if (selected_branch) {
-			commit = mocked_commit
+	const fetchLocalCommit = async (repo_name) => {
+		const commit_list = await window.api.gitLog(repo_name, {username: logged_user.username, password: logged_user.passwrod})
+		if (commit_list) {
+			return commit_list
 		} else {
-			commit = []
+			return []
 		}
-		return commit
 	}
 
-	const fetchNotClonedCommit = async () => {
-		const mocked_commit = [
-			{
-				message: 'notmessage1',
-				hash: '1kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d1',
-				author_name: 'author1',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'notmessage2',
-				hash: '2kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d2',
-				author_name: 'author2',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'notmessage3',
-				hash: '3kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d3',
-				author_name: 'author3',
-				date: '3 weeks ago'
-			},
-			{
-				message: 'notmessage4',
-				hash: '4kjfhdkljhrfiuhvjahrlkjhafjrhffkjhfvfs345fs31sd3d4',
-				author_name: 'author4',
-				date: '3 weeks ago'
-			}
-		]
-		let commit
-		if (selected_branch) {
-			commit = mocked_commit
+	const fetchNotClonedCommit = async (repo_name) => {
+		const commit_list = await window.api.apiListCommit(logged_user.access_token, repo_name, selected_branch.branch_name)
+		if (commit_list) {
+			return commit_list
 		} else {
-			commit = []
+			return []
 		}
-		return commit
 	}
 
 	const fetchCommit = async () => {
 		if (is_local_project) {
-			commit_list = await fetchLocalCommit()
+			commit_list = await fetchLocalCommit(selected_project.repo_path)
+			commit_list = commit_list.all
 		} else {
-			commit_list = await fetchNotClonedCommit()
+			commit_list = await fetchNotClonedCommit(selected_project.repo_path)
+			commit_list = commit_list.datas
 		}
+		console.log(commit_list)
 	}
 
-	onMount(() => {
+	onMount( async () => {
+		logged_user = await window.api.getLoggedUser()
 
-		fetchCommit()
-
+		rx_selected_project.subscribe((value) => selected_project = value)
 		rx_is_local_project.subscribe((value) => is_local_project = value)
 
-		rx_selected_branch.subscribe((value) => {
+		rx_selected_branch.subscribe( async (value) => {
 			selected_branch = value
-			fetchCommit()
+			await fetchCommit()
 		})
+		await fetchCommit()
 
 	})
 

@@ -1,5 +1,6 @@
 export const env = {
     PROTOCOL: 'http',
+	REPO_LINK: '192.168.122.144:80/git',
 	API_DOMAIN: 'http://192.168.122.144:5000',
     VAR_PATH: 'var',
 	LOCAL_REPO_PATH: '/home/eliome/Projects/gollum_local_repository',

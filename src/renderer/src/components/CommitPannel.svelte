@@ -1,11 +1,51 @@
 <script>
-	import { afterUpdate } from 'svelte'
+	import { afterUpdate, onMount } from 'svelte'
 	import Buttons from './Buttons.svelte'
+	import { rx_selected_project } from './project_dropdown/model'
+	import { rx_selected_branch } from './branch_dropdown/model'
 
-	let changed_files = [
-		{ name: 'file1', file_path: 'src/main', is_checked: false },
-		{ name: 'file2', file_path: 'src/main', is_checked: false }
-	]
+	//vars
+	let changed_files = []
+	let logged_user
+	let selected_project
+	let selected_files = []
+	let commit_message = ''
+
+	// pure function
+	const fetchChangedFiles = async (repo_name) => {
+		const status = await window.api.gitStatus(repo_name, {username: logged_user.username, password: logged_user.password})
+
+		if (status) {
+			return status
+		} else {
+			return {}
+		}
+	}
+
+	// NOT pure function
+	const defineChangedFiles = async () => {
+		changed_files = []
+		const status = await fetchChangedFiles(selected_project.repo_path)
+		const cf = [...status.not_added, ...status.created, ...status.deleted, ...status.modified, ...status.renamed]
+		const set_cf = new Set(cf)
+		for (const file_path of set_cf) {
+			changed_files = [...changed_files, { name: file_path.split('/').at(-1), file_path: file_path, is_checked: false }]
+		}
+		console.log(changed_files)
+	}
+
+	const commitSelectedFiles = async (amend=false) => {
+		await window.api.gitCommit(selected_project.repo_path, {username: logged_user.username, password: logged_user.passwrod}, commit_message, selected_files.map((value) => value.file_path), amend)
+		await defineChangedFiles()
+	}
+
+	// lifecycles
+	onMount( async () => {
+		logged_user = await window.api.getLoggedUser()
+		rx_selected_project.subscribe((value) => selected_project = value)
+		rx_selected_branch.subscribe(async (value) => await defineChangedFiles())
+	})
+
 
 	$: nothing_checked = !changed_files.reduce((acc, file) => (acc ||= file.is_checked), false)
 	$: checked_all = changed_files.reduce((acc, file) => (acc &&= file.is_checked), true)
@@ -22,12 +62,12 @@
 		})
 	}
 
-	let selected_files = []
+
 	function includeSelectedFile() {
 		selected_files = changed_files.filter((file) => file.is_checked)
 	}
 
-	let commit_message = ''
+
 	function commitMessageOnfucus() {}
 </script>
 
@@ -90,14 +130,16 @@
 		<Buttons
 			bg_color="--blue-btn"
 			disabled={nothing_checked}
-			on:click={() => {
+			on:click={async () => {
 				includeSelectedFile()
-				console.log(selected_files)
-				console.log(commit_message)
+				await commitSelectedFiles(false)
 			}}
 			label="Commit"
 		/>
-		<Buttons disabled={nothing_checked} bg_color="--background3" label="Commit & amend" />
+		<Buttons disabled={nothing_checked} bg_color="--background3" label="Commit & amend" on:click={ async () => {
+			includeSelectedFile()
+			await commitSelectedFiles(true)
+		}}/>
 	</div>
 </div>
 

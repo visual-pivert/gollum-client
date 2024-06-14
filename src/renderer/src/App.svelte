@@ -16,6 +16,7 @@
 			username: 'username',
 			password: 'password'
 		})
+		console.log(await window.api.getLoggedUser())
 	})
 </script>
 

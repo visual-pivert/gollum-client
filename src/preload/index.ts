@@ -12,6 +12,7 @@ const api = {
     apiRepoBlob: (access_token: string, repo_path: string, branch: string, file_path: string) => ipcRenderer.invoke('gapi:blob', access_token, repo_path, branch, file_path),
 	apiRepoList: (access_token: string) => ipcRenderer.invoke('gapi:list', access_token),
 	apiListBranches: (access_token: string, repo_path: string) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
+	apiListCommit: (access_token: string, repo_path: string, branch: string) => ipcRenderer.invoke('gapi:log', access_token, repo_path, branch),
 
 
     // La partie GIT
