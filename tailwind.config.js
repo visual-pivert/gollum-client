@@ -17,7 +17,12 @@ module.exports = {
       'font-color2': '#BDBDBD',
       'folder-color': '#dfc225'
     },
-    extend: {},
+    extend: {
+      spacing: {
+        'notif-bottom': '24px',
+        'notif-right': '42px'
+      }
+    },
   },
   plugins: [],
 }
