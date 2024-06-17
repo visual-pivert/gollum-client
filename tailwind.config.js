@@ -19,6 +19,7 @@ module.exports = {
     },
     extend: {
       spacing: {
+        'notif-height': 'calc(100vh - 100px)',
         'notif-bottom': '24px',
         'notif-right': '42px'
       }
