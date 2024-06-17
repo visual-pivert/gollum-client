@@ -20,6 +20,7 @@
 </script>
 
 <div class="flex flex-col gap-2 p-3">
+	<span class="font-bold mb-2">Connection à FTP :</span>
 	<div class="flex flex-col gap-1">
 		<label for="host">Host:</label>
 		<input
@@ -27,6 +28,17 @@
 			class="h-7 bg-transparent outline-none border focus:border-2 border-solid border-background3 focus:border-blue-btn p-1 rounded"
 			type="text"
 			id="host"
+		/>
+	</div>
+	<div class="flex flex-col gap-1">
+		<label for="port">Port:</label>
+		<input
+			bind:this={port_field}
+			bind:value={connection.value}
+			on:input={() => formatPort()}
+			class="h-7 bg-transparent outline-none border focus:border-2 border-solid border-background3 focus:border-blue-btn p-1 rounded"
+			type="text"
+			id="port"
 		/>
 	</div>
 	<div class="flex flex-col gap-1">
@@ -45,17 +57,6 @@
 			class="h-7 bg-transparent outline-none border focus:border-2 border-solid border-background3 focus:border-blue-btn p-1 rounded"
 			type="password"
 			id="password"
-		/>
-	</div>
-	<div class="flex flex-col gap-1">
-		<label for="port">Port:</label>
-		<input
-			bind:this={port_field}
-			bind:value={connection.value}
-			on:input={() => formatPort()}
-			class="h-7 bg-transparent outline-none border focus:border-2 border-solid border-background3 focus:border-blue-btn p-1 rounded"
-			type="text"
-			id="port"
 		/>
 	</div>
 	<div class="mt-2">

@@ -20,7 +20,7 @@ const right_components: {name: string, component: any, btn_icon: string, btn_pos
     },
     {name: 'commit_list', component: CommitsList, btn_icon: 'ri-list-check-2', btn_position: 'top', on_click: null},
     {name: 'merge', component: MergePannel, btn_icon: 'ri-git-merge-line', btn_position: 'top', on_click: null},
-    {name: 'upload', component: Ftp, btn_icon: 'ri-upload-2-line', btn_position: 'top', on_click: null},
+    {name: 'ftp', component: Ftp, btn_icon: 'ri-server-line', btn_position: 'top', on_click: null},
     {name: 'notification', component: null, btn_icon: 'ri-notification-2-line', btn_position: 'bottom', on_click: () => {}},
 ]
 
