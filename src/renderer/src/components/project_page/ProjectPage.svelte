@@ -23,7 +23,12 @@
 	}
 
 	const fetchNotClonedFileManager = async (project, branch, subdir = '') => {
-		const not_cloned_file_manager = await window.api.apiRepoTree(logged_user.access_token, project, branch, subdir)
+		const not_cloned_file_manager = await window.api.apiRepoTree(
+			logged_user.access_token,
+			project,
+			branch,
+			subdir
+		)
 		if (not_cloned_file_manager) {
 			return not_cloned_file_manager.datas
 		} else {
@@ -70,7 +75,7 @@
 
 	// Lifecycles
 	let subscribers
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
 		const is_local_project_sub = rx_is_local_project.subscribe(
 			(value) => (is_local_project = value)
@@ -105,11 +110,11 @@
 						on:click|preventDefault={() => {
 							defineCurrentPathArray(current_path_array.slice(0, index + 1))
 							defineCurrentFileManager()
-						}}>
-							<span class="hover:text-blue hover:underline">{step}</span>
-							<i class="ri-arrow-right-s-line"></i>
-						</a
+						}}
 					>
+						<span class="hover:text-blue hover:underline">{step}</span>
+						<i class="ri-arrow-right-s-line"></i>
+					</a>
 				{/each}
 			</div>
 			<div class="content">
