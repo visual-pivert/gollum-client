@@ -1,13 +1,14 @@
 <script>
 	import Buttons from '../Buttons.svelte'
+	import { search } from '../search'
 
 	let config_list = [
 		{
-			tech: 'wrodpress',
+			tech: 'wrodperss',
 			old_config: [
-				{ name: 'config', date: '1563-65-78' },
-				{ name: 'config', date: '1563-65-78' },
-				{ name: 'config', date: '1563-65-78' }
+				{ name: 'config_wp', date: '1563-65-78' },
+				{ name: 'conifugration_wp', date: '1563-65-78' },
+				{ name: 'tetsing_wp', date: '1563-65-78' }
 			],
 			form: [
 				{
@@ -29,7 +30,7 @@
 			]
 		},
 		{
-			tech: 'laravel',
+			tech: 'lavarel',
 			old_config: [
 				{ name: 'config', date: '1563-65-78' },
 				{ name: 'config', date: '1563-65-78' },
@@ -52,7 +53,15 @@
 		}
 	]
 
-	let selected_config = config_list[0]
+	let selected_template = config_list[0]
+	let template_to_search = ''
+	$: template_result = search(config_list, template_to_search, 'tech')
+
+	$: selected_config = selected_template.old_config
+	let config_to_search = ''
+	$: config_result = search(selected_config, config_to_search, 'name')
+
+	let old_config_chosen = null
 
 	let config_form
 	let config_form_data
@@ -72,27 +81,58 @@
 		modal_opened = false
 	}
 
-	let new_config = true
+	$: new_config = true
 </script>
 
 <div class="bg-background2 p-3 rounded-lg">
-	<span class="font-bold text-xl mb-2">Configuration du mise en production :</span>
+	<span class="font-bold text-xl mb-3 block px-2">Configuration du mise en production :</span>
 	<div class="p-2">
-		<div>
-			<label for="template" class="flex flex-col gap-2 mb-3">
-				<span>Templates :</span>
+		<div class="mb-6">
+			<!-- SELECT TEMPLETE TO USE -->
+			<div class="flex flex-col gap-2 mb-6">
+				<label for="template" class="self-start">
+					<span class="font-bold">Templates :</span>
+				</label>
 				<div class="flex gap-2 items-center">
-					<div
-						class="flex gap-2 items-center flex-grow border border-solid border-background3 rounded h-8 p-2"
-					>
-						<i class="ri-search-line"></i>
-						<input
-							type="text"
-							name=""
-							id="template"
-							class="bg-transparent outline-none flex-grow"
-						/>
-						<div class="absolute w-full"></div>
+					<div class="flex-grow relative">
+						<label
+							for="template"
+							class="flex gap-2 items-center border border-solid border-background3 rounded h-8 p-2"
+						>
+							<i class="ri-search-line"></i>
+							<input
+								type="text"
+								name=""
+								id="template"
+								class="bg-transparent outline-none flex-grow"
+								bind:value={template_to_search}
+								placeholder={selected_template.tech}
+								on:input={() => {
+									console.log(template_result)
+								}}
+							/>
+						</label>
+						{#if template_result.length > 0 && template_to_search}
+							<div
+								class="absolute w-full bg-background2 border border-solid border-background3 rounded p-2"
+							>
+								<ul>
+									{#each template_result as template}
+										<li class="hover:bg-background4 rounded">
+											<a
+												href="."
+												class="p-2 block"
+												on:click|preventDefault={() => {
+													template_to_search = ''
+													template_result = []
+													selected_template = template
+												}}>{template.tech}</a
+											>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
 					</div>
 					<div class="flex h-8">
 						<Buttons
@@ -102,14 +142,17 @@
 						/>
 					</div>
 				</div>
-			</label>
-			<div class="flex gap-2 h-8 mb-3">
+			</div>
+
+			<!-- BUTTON SWITCH CONFIG MODE -->
+			<div class="flex gap-2 h-8">
 				<Buttons
 					label="Nouvelle configuration"
 					bg_color={new_config ? '--blue-btn' : '--transpqrent'}
 					classes={new_config ? '' : 'border'}
 					on:click={() => {
 						new_config = true
+						old_config_chosen = null
 					}}
 				/>
 				<Buttons
@@ -118,15 +161,37 @@
 					classes={!new_config ? '' : 'border'}
 					on:click={() => {
 						new_config = false
+						old_config_chosen = null
 					}}
 				/>
 			</div>
 		</div>
 
-		{#if new_config}
+		{#if new_config ? !old_config_chosen : old_config_chosen}
 			<form bind:this={config_form} class="flex flex-col">
 				<table class="table-fixed mb-2">
-					{#each selected_config.form as field}
+					<tr>
+						<td class="py-1 w-3/12">
+							<label for="config-name" class="font-bold"
+								>Nom de la configuration</label
+							>
+						</td>
+						<td class="py-1 w-9/12">
+							<input
+								type="text"
+								name=""
+								id="config-name"
+								placeholder={old_config_chosen ? old_config_chosen.name : ''}
+								class="w-full bg-transparent h-8 p-2 border focus:border-2 border-solid border-background3 focus:border-blue-btn outline-none rounded"
+							/>
+						</td>
+					</tr>
+					<tr>
+						<td class="pt-4" colspan="2">
+							<span class="font-bold text-base">Configuration :</span>
+						</td>
+					</tr>
+					{#each selected_template.form as field}
 						<tr class="">
 							<td class="py-1 w-3/12">
 								<label for={field.name} class="">{field.name} :</label>
@@ -153,6 +218,26 @@
 				</div>
 			</form>
 		{:else}
+			<div class="flex-grow relative">
+				<label
+					for="template"
+					class="flex gap-2 items-center border border-solid border-background3 rounded h-8 p-2"
+				>
+					<i class="ri-search-line"></i>
+					<input
+						type="text"
+						name=""
+						id="template"
+						class="bg-transparent outline-none flex-grow"
+						bind:value={config_to_search}
+						placeholder="Rechercher une configuration"
+						on:input={() => {
+							console.log(config_result)
+						}}
+					/>
+				</label>
+			</div>
+
 			<div class="flex flex-col gap-3">
 				<div class="border border-solid border-background3 rounded mt-2">
 					<table class="table-fixed w-full">
@@ -160,11 +245,11 @@
 							<tr class="border-background3">
 								<td class="p-2">Nom du config</td>
 								<td class="p-2">Date</td>
-								<td class="w-10"></td>
+								<td class="w-20"></td>
 							</tr>
 						</thead>
 						<tbody>
-							{#each selected_config.old_config as config}
+							{#each config_result as config}
 								<tr class="hover:bg-background4" title={config.name}>
 									<td class="p-2">
 										<span>{config.name}</span>
@@ -172,16 +257,20 @@
 									<td class="p-2">
 										<span>{config.date}</span>
 									</td>
-									<td>
-										<i class="ri-check-line text-green"></i>
+									<td class="p-2 flex justify-center">
+										<button
+											class="p-1 px-2 bg-background3 rounded hover:bg-blue-btn"
+											on:click={() => {
+												old_config_chosen = config
+												new_config = null
+												console.log(old_config_chosen)
+											}}>Choisir</button
+										>
 									</td>
 								</tr>
 							{/each}
 						</tbody>
 					</table>
-				</div>
-				<div class="w-max self-end">
-					<Buttons label="Confirmer" bg_color="--blue-btn" />
 				</div>
 			</div>
 		{/if}
