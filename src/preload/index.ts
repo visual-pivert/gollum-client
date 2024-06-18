@@ -13,6 +13,9 @@ const api = {
 	apiRepoList: (access_token: string) => ipcRenderer.invoke('gapi:list', access_token),
 	apiListBranches: (access_token: string, repo_path: string) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
 	apiListCommit: (access_token: string, repo_path: string, branch: string) => ipcRenderer.invoke('gapi:log', access_token, repo_path, branch),
+	apiListUser: (access_token: string) => ipcRenderer.invoke('gapi:list-user', access_token),
+	apiCreateRepo: (access_token: string, username: string, password: string, repo_name: string) => ipcRenderer.invoke('gapi:create-repo', access_token, username, password, repo_name),
+	apiAddContrib: (access_token: string, username: string, repo_path: string) => ipcRenderer.invoke('gapi:add-contrib', access_token, username, repo_path),
 
 
     // La partie GIT

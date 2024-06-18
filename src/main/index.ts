@@ -128,6 +128,30 @@ app.whenReady().then(() => {
 		}
 	})
 
+	ipcMain.handle('gapi:list-user', async (_, access_token) => {
+		try {
+			return await GollumApi.listUser(access_token)
+		} catch (error : any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:create-repo', async (_, access_token, username, password ,repo_name) => {
+		try {
+			return await GollumApi.createRepo(access_token, username, password, repo_name)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:add-contrib', async (_, access_token, username, repo_path) => {
+		try {
+			return await GollumApi.addContrib(access_token, username, repo_path)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
 
     //IPC git
     ipcMain.handle('git:commit', async (_, basedir, credentials, message, file_or_dir_to_add, amend) => {
@@ -151,9 +175,10 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:merge', async(_, basedir, credentials, branch) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
-            await gollum_git.merge(branch)
+			await gollum_git.merge(branch)
+			console.log(env['LOCAL_REPO_PATH'] + '/' + basedir)
             return "OK"
         } catch(error: any) {
             return error.message
@@ -162,12 +187,15 @@ app.whenReady().then(() => {
 
     ipcMain.handle('git:clone', async(_, basedir, credentials, repo_path, local_path) => {
         const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
+		let message
         try {
             await gollum_git.clone(env['REPO_LINK'] + '/' + repo_path, local_path)
-            return "OK"
+            message = 'OK'
         } catch (error: any) {
-            return error.message
-        }
+            message = error
+        } finally {
+			return message
+		}
     })
 
     ipcMain.handle('git:push', async (_, basedir, credentials, remote, branch_name) => {

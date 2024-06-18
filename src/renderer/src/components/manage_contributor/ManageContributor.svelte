@@ -1,18 +1,27 @@
 <script>
-	import { afterUpdate } from 'svelte'
+	import { afterUpdate, onMount } from 'svelte'
 	import { openDropdown } from '../../event'
 	import { close_function_overlays, new_project_data } from '../../store'
 	import { search_result_contributor } from './store'
 
-	const users = [
-		{ username: 'Baba' },
-		{ username: 'Beloh' },
-		{ username: 'Gurry' },
-		{ username: 'Koto' },
-		{ username: 'Niim' },
-		{ username: 'Selu' },
-		{ username: 'Zaama' }
-	]
+	let users = []
+
+	let logged_user
+
+	const fetchUsers = async () => {
+		const u = await window.api.apiListUser(logged_user.access_token)
+		console.log(u)
+		return u.datas
+	}
+
+	const defineUsers = async () => {
+		users = await fetchUsers()
+	}
+
+	onMount( async () => {
+		logged_user = await window.api.getLoggedUser()
+		await defineUsers()
+	})
 
 	let to_search = ''
 	let search_focus = false

@@ -1,5 +1,7 @@
 import { env } from '../../env'
 import axios from 'axios'
+import fs from 'node:fs'
+import simpleGit from 'simple-git'
 
 export type GollumApiResponse<T> = {
 	message: string,
@@ -86,7 +88,7 @@ export class GollumApi {
      * @param {string} repo_name
      * @returns {Promise<GollumApiResponse<undefined>>}
      */
-    public static async createRepo(access_token: string, repo_name: string): Promise<GollumApiResponse<undefined>> {
+    public static async createRepo(access_token: string, username: string, password: string, repo_name: string): Promise<GollumApiResponse<undefined>> {
         const create_repo_endpoint = GollumApi.domain + '/api/repo/create'
         const headers = {...GollumApi.api_header_config, 'Access-Token': access_token}
         const data = { 'repo_path': repo_name }
@@ -94,11 +96,36 @@ export class GollumApi {
         try {
             const fetched_value = await axios({ method: 'POST', headers: headers, data: data, url: create_repo_endpoint })
             api_out = fetched_value.data
+			await GollumApi.createAndPushTempRep('origin', GollumApi.makeRemote(username, password, env['REPO_LINK'] + '/' + username + '/' + repo_name))
         } catch (error: any) {
             api_out = error.response.data
         }
         return api_out
     }
+
+	private static makeRemote(username: string, password: string, repo_path: string) {
+		return `${env['PROTOCOL']}://${username}:${password}@${repo_path}`
+	}
+
+	private static async createAndPushTempRep(remote_name: string, remote_link: string) {
+		const new_dir_path = env['TEMP_PATH'] + '/' + '_tmp_repo'
+		const branch_name = 'master'
+		try {
+			fs.mkdirSync(new_dir_path)
+			const git = simpleGit(new_dir_path)
+			await git.init()
+			await git.checkoutLocalBranch(branch_name);
+			fs.writeFileSync(new_dir_path + '/' + 'README.md', 'Created with gollum')
+			await git.add('.')
+			await git.commit('Created with gollum')
+			await git.addRemote(remote_name, remote_link)
+			await git.push(remote_name, branch_name)
+
+			await fs.rmSync(new_dir_path, {recursive: true})
+		} catch (e: any) {
+			console.log(e)
+		}
+	}
 
     /**
      * Delete repository if good access_token

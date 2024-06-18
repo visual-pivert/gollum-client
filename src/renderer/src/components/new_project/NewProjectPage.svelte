@@ -1,21 +1,39 @@
 <script>
+	import { onMount } from 'svelte'
 	import { new_project_data } from '../../store'
 	import Buttons from '../Buttons.svelte'
 	import ManageContributor from '../manage_contributor/ManageContributor.svelte'
 
 	const data = {
 		project_name: '',
-		readme: '',
 		contributors: []
 	}
+
+	let logged_user
+
+	onMount ( async () => {
+		logged_user = await window.api.getLoggedUser()
+	})
 
 	new_project_data.set(data)
 
 	$: can_create = !$new_project_data.project_name
 
-	function crateProject() {
-		console.log(data)
+	const createProject = async () => {
+		const repo_created = await window.api.apiCreateRepo(logged_user.access_token, logged_user.username, logged_user.password, data.project_name)
+		console.log(repo_created)
+		if (data.contributors.length > 0) {
+			for (const el of data.contributors) {
+				try {
+					console.log(el)
+					await window.api.apiAddContrib(logged_user.access_token, el.username, logged_user.username + '/' + data.project_name)
+				} catch(e) {
+					console.log(e)
+				}
+			}
+		}
 	}
+
 </script>
 
 <div class="bg-background2 p-4 rounded-lg">
@@ -31,21 +49,12 @@
 					id="project-name"
 				/>
 			</div>
-			<div class="flex flex-col gap-2">
-				<label class="w-max" for="readme">Readme:</label>
-				<textarea
-					bind:value={$new_project_data.readme}
-					class="bg-transparent border focus:border-2 border-solid border-background3 rounded w-full h-16 p-2 outline-none focus:border-blue-btn"
-					name="readme"
-					id="readme"
-				></textarea>
-			</div>
 			<ManageContributor />
 			<div class="w-28 self-end">
 				<Buttons
 					bg_color="--blue-btn"
 					label="Créer"
-					on:click={() => crateProject()}
+					on:click={() => createProject()}
 					disabled={can_create}
 				/>
 			</div>

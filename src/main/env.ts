@@ -6,5 +6,6 @@ export const env = {
 	LOCAL_REPO_PATH: '/home/eliome/Projects/gollum_local_repository',
 	LOCAL_PROD_PATH: '/home/eliome/Projects/gollum_local_prod', // attention! can kill your sys
 	TEMPLATE_PATH: '/home/eliome/Projects/gollum_template',
+	TEMP_PATH: '/home/eliome/Projects/gollum_local_temp',
 	PROD_DB_PATH: 'prod_config.db',
 }

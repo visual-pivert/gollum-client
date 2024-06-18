@@ -1,32 +1,47 @@
 <script>
-	import { afterUpdate } from 'svelte'
+	import { onMount } from 'svelte'
 	import Buttons from './Buttons.svelte'
-	import { selected_branch } from '../store'
+	import { rx_selected_project } from './project_dropdown/model'
+	import { rx_selected_branch } from './branch_dropdown/model'
 
-	let branch_list = [
-		{ branch_name: 'master' },
-		{ branch_name: 'release1.0' },
-		{ branch_name: 'release1.1' },
-		{ branch_name: 'release1.3' },
-		{ branch_name: 'test' },
-		{ branch_name: 'reeeb' },
-		{ branch_name: 'module' }
-	]
+	let branch_list = []
 
+	let selected_project //rx
+	let selected_branch //rx
+
+	let logged_user
+
+	const fetchLocalBranch = async () => {
+		branch_list = await window.api.localBranchList(selected_project.repo_path)
+	}
 	let to_search = ''
 	let search_focus = false
 
 	$: result = branch_list.reduce((acc, branch) => {
-		if (branch.branch_name.toLowerCase().startsWith(to_search.toLowerCase())) {
+		if (branch.branch_name.toLowerCase().startsWith(to_search.toLowerCase()) &&
+			selected_branch.branch_name != branch.branch_name) {
 			acc = [...acc, branch]
 		}
 		return acc
 	}, [])
 
+	onMount(async () => {
+		logged_user = await window.api.getLoggedUser()
+		rx_selected_project.subscribe((value) => {
+			selected_project = value
+		})
+		rx_selected_branch.subscribe( async (value) => {
+			selected_branch = value
+			await fetchLocalBranch()
+		})
+		await fetchLocalBranch()
+	})
+
 	let checked_branch = null
 
-	function merge(current_branch, to_merge) {
-		console.log('merge: ', current_branch, to_merge)
+	const merge =  async () => {
+		await window.api.gitMerge(selected_project.repo_path, { username: logged_user.username, password: logged_user.password }, checked_branch.branch_name)
+		rx_selected_project.next(selected_project)
 	}
 </script>
 
@@ -86,7 +101,7 @@
 		<Buttons
 			label="Merge"
 			bg_color="--blue-btn"
-			on:click={() => merge($selected_branch, checked_branch.branch_name)}
+			on:click={async() => await merge()}
 			disabled={!checked_branch}
 		/>
 	</div>
