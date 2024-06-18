@@ -27,6 +27,7 @@ const api = {
     gitPull: (basedir: string, credentials:{username: string, password: string}, remote: string, branch_name: string) => ipcRenderer.invoke('git:pull', basedir, credentials, remote, branch_name),
     gitStatus: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:status', basedir, credentials),
     gitLog: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:log', basedir, credentials),
+	gitNewBranch: (basedir: string, credentials:{username:string, password: string}, branch_name: string) => ipcRenderer.invoke('git:new-branch', basedir, credentials, branch_name),
 
 	// La partie local
 	localRepoList: () => ipcRenderer.invoke('local:list'),

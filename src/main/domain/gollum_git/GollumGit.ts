@@ -108,6 +108,10 @@ export class GollumGit {
 		await this.git_obj.merge([branch])
 	}
 
+	public async newBranch(branch_name: string) {
+		await this.git_obj.branch([branch_name])
+	}
+
 	private makeRemote(username: string, password: string, repo_path: string) {
 		return `${env['PROTOCOL']}://${username}:${password}@${repo_path}`
 	}

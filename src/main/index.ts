@@ -238,6 +238,15 @@ app.whenReady().then(() => {
         }
     })
 
+	ipcMain.handle('git:new-branch', async(_, basedir, credentials, branch_name) => {
+		const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
+		try {
+			return await gollum_git.newBranch(branch_name)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
 	createWindow()
 
 	app.on('activate', function () {
