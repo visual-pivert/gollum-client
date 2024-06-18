@@ -5,6 +5,7 @@
 	// import { current_page } from './store'
 	// import TestPage from './pages/TestPage.svelte'
 	import Index from './pages/Index.svelte'
+	import NotifContainer from './components/NotifContainer.svelte'
 
 	// const pages = {
 	// 	'login-page': LoginPage,
@@ -20,10 +21,11 @@
 	})
 </script>
 
-<div class="main-container">
+<div class="main-container relative">
 	<!-- <LoginPage></LoginPage>
     <SignupPage></SignupPage> -->
 	<!-- <svelte:component this={pages[$current_page]} /> -->
 	<!-- <TestPage></TestPage> -->
 	<Index />
+	<NotifContainer />
 </div>

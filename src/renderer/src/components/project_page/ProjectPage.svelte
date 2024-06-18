@@ -23,7 +23,12 @@
 	}
 
 	const fetchNotClonedFileManager = async (project, branch, subdir = '') => {
-		const not_cloned_file_manager = await window.api.apiRepoTree(logged_user.access_token, project, branch, subdir)
+		const not_cloned_file_manager = await window.api.apiRepoTree(
+			logged_user.access_token,
+			project,
+			branch,
+			subdir
+		)
 		if (not_cloned_file_manager) {
 			return not_cloned_file_manager.datas
 		} else {
@@ -70,7 +75,7 @@
 
 	// Lifecycles
 	let subscribers
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
 		const is_local_project_sub = rx_is_local_project.subscribe(
 			(value) => (is_local_project = value)
@@ -105,11 +110,11 @@
 						on:click|preventDefault={() => {
 							defineCurrentPathArray(current_path_array.slice(0, index + 1))
 							defineCurrentFileManager()
-						}}>
-							<span class="hover:text-blue hover:underline">{step}</span>
-							<i class="ri-arrow-right-s-line"></i>
-						</a
+						}}
 					>
+						<span class="hover:text-blue hover:underline">{step}</span>
+						<i class="ri-arrow-right-s-line"></i>
+					</a>
 				{/each}
 			</div>
 			<div class="content">
@@ -129,16 +134,10 @@
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-5/12">
 									<div class="name-cell w-full">
-										{#if item.type == 'tree'}
-											<i
-												class="ri-folder-fill text-folder-color text-lg leading-none"
-											></i>
-										{:else}
-											<i class="ri-file-3-line text-lg leading-none"></i>
-										{/if}
 										<a
+											title={item.name}
 											href="."
-											class="text-font-color hover:text-blue hover:underline text-nowrap w-full overflow-hidden overflow-ellipsis"
+											class="flex items-center gap-2 text-font-color hover:text-blue w-max max-w-full"
 											on:click|preventDefault={() => {
 												defineCurrentPathArray([
 													...current_path_array,
@@ -147,11 +146,24 @@
 												defineCurrentFileManager()
 											}}
 										>
-											<span>{item.name}</span>
+											{#if item.type == 'tree'}
+												<i
+													class="ri-folder-fill text-folder-color text-lg leading-none"
+												></i>
+											{:else}
+												<i
+													class="ri-file-3-line text-font-color2 text-lg leading-none"
+												></i>
+											{/if}
+											<span
+												class="text-nowrap w-max overflow-hidden overflow-ellipsis"
+											>
+												{item.name}
+											</span>
 										</a>
 									</div>
 								</td>
-								<td class="py-3 px-4 text-left w-4/12 overflow-hidden">
+								<td class="px-4 text-left w-4/12 overflow-hidden">
 									<div
 										class="text-font-color w-full overflow-hidden overflow-ellipsis"
 									>
@@ -190,7 +202,7 @@
 <style>
 	.project-wrapper {
 		width: 100%;
-		height: 300px;
+		/* height: 300px; */
 	}
 	.container {
 		display: flex;

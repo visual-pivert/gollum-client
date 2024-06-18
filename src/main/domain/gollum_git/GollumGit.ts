@@ -95,7 +95,7 @@ export class GollumGit {
 	}
 
 	public async commit(message: string, file_or_dir_to_add: [], amend = false) {
-		this.git_obj.add(file_or_dir_to_add)
+		await this.git_obj.add(file_or_dir_to_add)
 		if (!amend) await this.git_obj.commit(message)
 		else await this.git_obj.commit(message, ['--amend'])
 	}

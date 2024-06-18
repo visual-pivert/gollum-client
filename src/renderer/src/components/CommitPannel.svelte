@@ -1,5 +1,5 @@
 <script>
-	import { afterUpdate, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 	import Buttons from './Buttons.svelte'
 	import { rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
@@ -13,7 +13,10 @@
 
 	// pure function
 	const fetchChangedFiles = async (repo_name) => {
-		const status = await window.api.gitStatus(repo_name, {username: logged_user.username, password: logged_user.password})
+		const status = await window.api.gitStatus(repo_name, {
+			username: logged_user.username,
+			password: logged_user.password
+		})
 
 		if (status) {
 			return status
@@ -26,33 +29,46 @@
 	const defineChangedFiles = async () => {
 		changed_files = []
 		const status = await fetchChangedFiles(selected_project.repo_path)
-		const cf = [...status.not_added, ...status.created, ...status.deleted, ...status.modified, ...status.renamed]
+		const cf = [
+			...status.not_added,
+			...status.created,
+			...status.deleted,
+			...status.modified,
+			...status.renamed
+		]
 		const set_cf = new Set(cf)
 		for (const file_path of set_cf) {
-			changed_files = [...changed_files, { name: file_path.split('/').at(-1), file_path: file_path, is_checked: false }]
+			changed_files = [
+				...changed_files,
+				{ name: file_path.split('/').at(-1), file_path: file_path, is_checked: false }
+			]
 		}
-		console.log(changed_files)
 	}
 
-	const commitSelectedFiles = async (amend=false) => {
-		await window.api.gitCommit(selected_project.repo_path, {username: logged_user.username, password: logged_user.passwrod}, commit_message, selected_files.map((value) => value.file_path), amend)
+	const commitSelectedFiles = async (amend = false) => {
+		const commited = await window.api.gitCommit(
+			selected_project.repo_path,
+			{ username: logged_user.username, password: logged_user.password },
+			commit_message,
+			selected_files.map((value) => value.file_path),
+			amend
+		)
+		console.log(commited)
 		await defineChangedFiles()
 	}
 
 	// lifecycles
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
-		rx_selected_project.subscribe((value) => selected_project = value)
+		rx_selected_project.subscribe((value) => (selected_project = value))
 		rx_selected_branch.subscribe(async (value) => await defineChangedFiles())
 	})
 
-
 	$: nothing_checked = !changed_files.reduce((acc, file) => (acc ||= file.is_checked), false)
-	$: checked_all = changed_files.reduce((acc, file) => (acc &&= file.is_checked), true)
-
-	afterUpdate(() => {
-		console.log(nothing_checked)
-	})
+	$: checked_all = changed_files.reduce(
+		(acc, file) => (acc &&= file.is_checked),
+		true && changed_files.length > 0
+	)
 
 	function checkAllChange() {
 		checked_all = !checked_all
@@ -62,11 +78,9 @@
 		})
 	}
 
-
 	function includeSelectedFile() {
 		selected_files = changed_files.filter((file) => file.is_checked)
 	}
-
 
 	function commitMessageOnfucus() {}
 </script>
@@ -136,10 +150,15 @@
 			}}
 			label="Commit"
 		/>
-		<Buttons disabled={nothing_checked} bg_color="--background3" label="Commit & amend" on:click={ async () => {
-			includeSelectedFile()
-			await commitSelectedFiles(true)
-		}}/>
+		<Buttons
+			disabled={nothing_checked}
+			bg_color="--background3"
+			label="Commit & amend"
+			on:click={async () => {
+				includeSelectedFile()
+				await commitSelectedFiles(true)
+			}}
+		/>
 	</div>
 </div>
 
