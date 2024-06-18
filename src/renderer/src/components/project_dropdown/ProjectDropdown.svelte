@@ -48,9 +48,11 @@
 
 	// lifecycles
 	let subscriber
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
-		subscriber = rx_selected_project.subscribe((value) => {selected_project = value})
+		subscriber = rx_selected_project.subscribe((value) => {
+			selected_project = value
+		})
 	})
 
 	onDestroy(() => {
@@ -61,9 +63,10 @@
 </script>
 
 <Dropdown
-	label={selected_project ? selected_project.repo_path : 'Project'}
+	title={selected_project ? selected_project.repo_path : 'project'}
+	label={selected_project ? selected_project.repo_path.split('/').at(-1) : 'Project'}
 	show_content={show}
-	on:click={async() => {
+	on:click={async () => {
 		openDropdown(active_project_dropdown, await onDropdownOpen())
 	}}
 >
@@ -73,8 +76,25 @@
 			<ul>
 				{#each local_project_list as project}
 					<li class="rounded hover:bg-background4">
-						<a href="." class="px-3 py-2 flex" on:click|preventDefault={async()=> {defineIsLocalProject(true); defineProject(project)}}>
-							<span>{project.repo_path}</span>
+						<a
+							title={project.repo_path}
+							href="."
+							class="px-3 py-2 flex hover:text-blue"
+							on:click|preventDefault={async () => {
+								defineIsLocalProject(true)
+								defineProject(project)
+							}}
+						>
+							<div class="flex flex-col gap">
+								<span
+									class="font-bold block w-full text-nowrap overflow-hidden overflow-ellipsis"
+								>
+									{project.repo_path.split('/').at(-1)}
+								</span>
+								<span class="text-xs text-font-color3 leading-none"
+									>{project.repo_path}</span
+								>
+							</div>
 						</a>
 					</li>
 				{/each}
@@ -85,8 +105,25 @@
 			<ul>
 				{#each not_cloned_project_list as project}
 					<li class="rounded hover:bg-background4">
-						<a href="." class="px-3 py-2 flex" on:click|preventDefault={async()=> {defineIsLocalProject(false); defineProject(project)}}>
-							<span>{project.repo_path}</span>
+						<a
+							title={project.repo_path}
+							href="."
+							class="px-3 py-2 flex hover:text-blue"
+							on:click|preventDefault={async () => {
+								defineIsLocalProject(false)
+								defineProject(project)
+							}}
+						>
+							<div class="flex flex-col gap">
+								<span
+									class="font-bold block w-full text-nowrap overflow-hidden overflow-ellipsis"
+								>
+									{project.repo_path.split('/').at(-1)}
+								</span>
+								<span class="text-xs text-font-color3 leading-none"
+									>{project.repo_path}</span
+								>
+							</div>
 						</a>
 					</li>
 				{/each}

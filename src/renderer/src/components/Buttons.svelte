@@ -3,6 +3,7 @@
 	// const dispatch = createEventDispatcher()
 
 	export let label = ''
+	export let title = ''
 	export let icon = ''
 	export let icon2 = ''
 	export let bg_color = '--background3'
@@ -13,12 +14,13 @@
 	$: cursor = disabled ? 'not-allowed' : 'pointer'
 	let padding = icon ? '0.4em 1em 0.4em 0.7em' : '0.4em 1em'
 	padding = icon2 ? '0.4em 0.7em 0.4em 1em' : padding
-	padding = label ? padding : '2px'
+	padding = label ? padding : '0.4em 2px'
 
 	// label = [...label][0].toUpperCase() + [...label].slice(1).join('')
 </script>
 
 <button
+	{title}
 	class={classes}
 	style="
 	cursor:{cursor};

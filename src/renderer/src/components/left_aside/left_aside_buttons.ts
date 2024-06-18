@@ -12,7 +12,7 @@ import ProdConfig from "../prod_config/ProdConfig.svelte"
 let left_components: {name: string, component: any, btn_icon: string, btn_position: 'top' | 'bottom', on_click: () => void | null}[] = [
     {name: 'project_page', btn_icon: 'ri-folder-line', btn_position: 'top', component: ProjectPage, on_click: null},
     {name: 'settings_page', btn_icon: 'ri-settings-3-line', btn_position: 'top', component: SettingsPage, on_click: null},
-    {name: 'prod_config', btn_icon: 'ri-file-code-line', btn_position: 'top', component: ProdConfig, on_click: null}
+    {name: 'prod_config', btn_icon: 'ri-upload-2-line', btn_position: 'top', component: ProdConfig, on_click: null}
     // {name: 'quit', btn_icon: 'ri-arrow-left-line', btn_position: 'bottom', component: null, on_click: () => document.dispatchEvent(left_buttons_events.project_page)}
 
 ]

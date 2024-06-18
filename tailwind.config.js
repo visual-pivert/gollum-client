@@ -15,9 +15,16 @@ module.exports = {
       'red': '#ff3216',
       'font-color': '#E2E2E2',
       'font-color2': '#BDBDBD',
+      'font-color3': '#bdbdbdb1',
       'folder-color': '#dfc225'
     },
-    extend: {},
+    extend: {
+      spacing: {
+        'notif-height': 'calc(100vh - 100px)',
+        'notif-bottom': '24px',
+        'notif-right': '42px'
+      }
+    },
   },
   plugins: [],
 }
