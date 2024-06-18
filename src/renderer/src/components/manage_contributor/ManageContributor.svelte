@@ -18,7 +18,7 @@
 		users = await fetchUsers()
 	}
 
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
 		await defineUsers()
 	})
@@ -56,7 +56,7 @@
 	<span>Contributeur:</span>
 	{#if $new_project_data.contributors.length > 0}
 		<div>
-			<ul class="flex gap-2 flex-wrap">
+			<ul class="contributor-container flex gap-2 flex-wrap max-h-30vh overflow-auto">
 				{#each $new_project_data.contributors as contributor}
 					<ul>
 						<div
@@ -131,4 +131,7 @@
 </div>
 
 <style>
+	.contributor-container::-webkit-scrollbar-thumb {
+		background-color: var(--background3);
+	}
 </style>
