@@ -134,16 +134,10 @@
 							<tr class="hover:bg-background4">
 								<td class="py-3 px-4 text-left w-5/12">
 									<div class="name-cell w-full">
-										{#if item.type == 'tree'}
-											<i
-												class="ri-folder-fill text-folder-color text-lg leading-none"
-											></i>
-										{:else}
-											<i class="ri-file-3-line text-lg leading-none"></i>
-										{/if}
 										<a
+											title={item.name}
 											href="."
-											class="text-font-color hover:text-blue hover:underline text-nowrap w-full overflow-hidden overflow-ellipsis"
+											class="flex items-center gap-2 text-font-color hover:text-blue w-max max-w-full"
 											on:click|preventDefault={() => {
 												defineCurrentPathArray([
 													...current_path_array,
@@ -152,11 +146,24 @@
 												defineCurrentFileManager()
 											}}
 										>
-											<span>{item.name}</span>
+											{#if item.type == 'tree'}
+												<i
+													class="ri-folder-fill text-folder-color text-lg leading-none"
+												></i>
+											{:else}
+												<i
+													class="ri-file-3-line text-font-color2 text-lg leading-none"
+												></i>
+											{/if}
+											<span
+												class="text-nowrap w-max overflow-hidden overflow-ellipsis"
+											>
+												{item.name}
+											</span>
 										</a>
 									</div>
 								</td>
-								<td class="py-3 px-4 text-left w-4/12 overflow-hidden">
+								<td class="px-4 text-left w-4/12 overflow-hidden">
 									<div
 										class="text-font-color w-full overflow-hidden overflow-ellipsis"
 									>
@@ -195,7 +202,7 @@
 <style>
 	.project-wrapper {
 		width: 100%;
-		height: 300px;
+		/* height: 300px; */
 	}
 	.container {
 		display: flex;
