@@ -1,14 +1,14 @@
 <script>
 	import { onMount } from 'svelte'
-	import { new_project_data } from '../../store'
 	import Buttons from '../Buttons.svelte'
 	import ManageContributor from '../manage_contributor/ManageContributor.svelte'
 	import { show_new_project_modal } from './store'
+	import { writable } from 'svelte/store'
 
-	const data = {
+	const data = writable({
 		project_name: '',
 		contributors: []
-	}
+	})
 
 	let logged_user
 
@@ -16,26 +16,24 @@
 		logged_user = await window.api.getLoggedUser()
 	})
 
-	new_project_data.set(data)
-
-	$: can_create = !$new_project_data.project_name
+	$: can_create = !$data.project_name
 
 	const createProject = async () => {
 		const repo_created = await window.api.apiCreateRepo(
 			logged_user.access_token,
 			logged_user.username,
 			logged_user.password,
-			data.project_name
+			$data.project_name
 		)
 		console.log(repo_created)
-		if (data.contributors.length > 0) {
-			for (const el of data.contributors) {
+		if ($data.contributors.length > 0) {
+			for (const el of $data.contributors) {
 				try {
 					console.log(el)
 					await window.api.apiAddContrib(
 						logged_user.access_token,
 						el.username,
-						logged_user.username + '/' + data.project_name
+						logged_user.username + '/' + $data.project_name
 					)
 				} catch (e) {
 					console.log(e)
@@ -57,14 +55,14 @@
 					<div class="flex gap-2 flex-col justify-start">
 						<label class="w-max" for="project-name">Nom du projet:</label>
 						<input
-							bind:value={$new_project_data.project_name}
+							bind:value={$data.project_name}
 							type="text"
 							class="flex-grow bg-transparent outline-none border focus:border-2 border-solid border-background3 w-full h-8 focus:border-blue-btn p-2 rounded"
 							name="project-name"
 							id="project-name"
 						/>
 					</div>
-					<ManageContributor />
+					<ManageContributor project_data={data} />
 					<div class="w-max self-end flex gap-2">
 						<Buttons
 							label="Annuler"
@@ -75,7 +73,9 @@
 						<Buttons
 							bg_color="--blue-btn"
 							label="Créer"
-							on:click={() => createProject()}
+							on:click={() => {
+								createProject()
+							}}
 							disabled={can_create}
 						/>
 					</div>

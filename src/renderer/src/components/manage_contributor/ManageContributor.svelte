@@ -1,7 +1,6 @@
 <script>
-	import { afterUpdate, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 	import { openDropdown } from '../../event'
-	import { close_function_overlays, new_project_data } from '../../store'
 	import { search_result_contributor } from './store'
 
 	let users = []
@@ -33,31 +32,31 @@
 		return acc
 	}, [])
 
+	export let project_data // TYPE WRITABLE
+
 	function addContributor(user) {
 		if (
-			!$new_project_data.contributors.some(
-				(contributor) => contributor.username == user.username
-			)
+			!$project_data.contributors.some((contributor) => contributor.username == user.username)
 		) {
-			$new_project_data.contributors = [...$new_project_data.contributors, user]
+			$project_data.contributors = [...$project_data.contributors, user]
 		}
 	}
 
 	function removeContributor(user) {
-		delete $new_project_data.contributors[$new_project_data.contributors.indexOf(user)]
-		$new_project_data.contributors = [...$new_project_data.contributors].filter((user) => {
+		delete $project_data.contributors[$project_data.contributors.indexOf(user)]
+		$project_data.contributors = [...$project_data.contributors].filter((user) => {
 			return user != undefined
 		})
-		// console.log($new_project_data.contributors)
+		console.log($project_data.contributors)
 	}
 </script>
 
 <div class="flex flex-col gap-2">
 	<span>Contributeur:</span>
-	{#if $new_project_data.contributors.length > 0}
+	{#if $project_data.contributors.length > 0}
 		<div>
 			<ul class="contributor-container flex gap-2 flex-wrap max-h-30vh overflow-auto">
-				{#each $new_project_data.contributors as contributor}
+				{#each $project_data.contributors as contributor}
 					<ul>
 						<div
 							class="flex gap-1 items-center p-2 border border-solid border-background3 rounded hover:bg-background4"

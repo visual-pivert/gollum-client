@@ -1,24 +1,33 @@
 <script>
+	import { writable } from 'svelte/store'
 	import Buttons from '../Buttons.svelte'
 	import ManageContributor from '../manage_contributor/ManageContributor.svelte'
-	import { new_project_data } from '../../store'
 
+	// current project's settings
 	const project_data = {
-		project_name: 'project1',
-		readme: 'readme',
-		contributors: [{ username: 'Niim' }, { username: 'Selu' }, { username: 'Zaama' }]
+		project_name: 'selected_project',
+		contributors: [
+			{
+				email: 'username.email@gmail.com',
+				slug: 'username',
+				username: 'username'
+			},
+			{ username: 'Niim' },
+			{ username: 'Selu' },
+			{ username: 'Zaama' }
+		]
 	}
 
-	cancelChange()
+	const new_settings_data = writable(JSON.parse(JSON.stringify(project_data)))
 
-	$: disable_button = JSON.stringify($new_project_data) === JSON.stringify(project_data)
+	$: disable_button = JSON.stringify($new_settings_data) === JSON.stringify(project_data)
 
 	function cancelChange() {
-		$new_project_data = JSON.parse(JSON.stringify(project_data))
+		new_settings_data.set(JSON.parse(JSON.stringify(project_data)))
 	}
 
 	function saveChange() {
-		console.log($new_project_data)
+		console.log($new_settings_data)
 	}
 </script>
 
@@ -26,14 +35,14 @@
 	<div class="flex gap-2 flex-col justify-start">
 		<label class="w-max" for="project-name">Nom du projet:</label>
 		<input
-			bind:value={$new_project_data.project_name}
+			bind:value={$new_settings_data.project_name}
 			type="text"
 			class="flex-grow bg-transparent outline-none border focus:border-2 border-solid border-background3 h-8 focus:border-blue-btn p-2 rounded"
 			name="project-name"
 			id="project-name"
 		/>
 	</div>
-	<ManageContributor />
+	<ManageContributor project_data={new_settings_data} />
 	<div class="flex gap-2 w-max self-end">
 		<Buttons
 			label="Annuler"
