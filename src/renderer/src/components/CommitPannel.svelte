@@ -1,5 +1,5 @@
 <script>
-	import { afterUpdate, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 	import Buttons from './Buttons.svelte'
 	import { rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
@@ -43,17 +43,17 @@
 				{ name: file_path.split('/').at(-1), file_path: file_path, is_checked: false }
 			]
 		}
-		console.log(changed_files)
 	}
 
 	const commitSelectedFiles = async (amend = false) => {
-		await window.api.gitCommit(
+		const commited = await window.api.gitCommit(
 			selected_project.repo_path,
-			{ username: logged_user.username, password: logged_user.passwrod },
+			{ username: logged_user.username, password: logged_user.password },
 			commit_message,
 			selected_files.map((value) => value.file_path),
 			amend
 		)
+		console.log(commited)
 		await defineChangedFiles()
 	}
 
