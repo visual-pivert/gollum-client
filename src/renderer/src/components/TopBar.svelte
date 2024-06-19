@@ -4,12 +4,13 @@
 	import BranchDropdown from './branch_dropdown/BranchDropdown.svelte'
 	import MenuDropdown from './menu_dropdown/MenuDropdown.svelte'
 	import ProjectDropdown from './project_dropdown/ProjectDropdown.svelte'
-	import { rx_selected_project } from './project_dropdown/model'
+	import { rx_is_local_project, rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
 	import { right_buttons_events } from './right_aside/right_aside_buttons'
 
 	let selected_project //rx
 	let selected_branch //rx
+	let is_local_project
 	let logged_user
 
 	const gitPush = async () => {
@@ -48,7 +49,10 @@
 		const selected_branch_sub = rx_selected_branch.subscribe(
 			(value) => (selected_branch = value)
 		)
-		subscribers = [selected_branch_sub, selected_project_sub]
+		const is_local_project_sub = rx_is_local_project.subscribe(
+			(value) => (is_local_project = value)
+		)
+		subscribers = [selected_branch_sub, selected_project_sub, is_local_project_sub]
 	})
 
 	onDestroy(() => {
@@ -75,30 +79,33 @@
 		</div>
 		{#if selected_project}
 			<div class="button-container">
-				<Button
-					icon="ri-arrow-left-down-line"
-					icon_color="var(--blue)"
-					label="Pull"
-					on:click={async () => {
-						await gitPull()
-					}}
-				/>
-				<Button
-					icon="ri-arrow-right-up-line"
-					icon_color="var(--green)"
-					label="Push"
-					on:click={async () => {
-						await gitPush()
-					}}
-				/>
-				<Button
-					icon="ri-file-copy-line"
-					icon_color="var(--font-color)"
-					label="Clone"
-					on:click={async () => {
-						await gitClone()
-					}}
-				/>
+				{#if is_local_project}
+					<Button
+						icon="ri-arrow-left-down-line"
+						icon_color="var(--blue)"
+						label="Pull"
+						on:click={async () => {
+							await gitPull()
+						}}
+					/>
+					<Button
+						icon="ri-arrow-right-up-line"
+						icon_color="var(--green)"
+						label="Push"
+						on:click={async () => {
+							await gitPush()
+						}}
+					/>
+				{:else}
+					<Button
+						icon="ri-file-copy-line"
+						icon_color="var(--font-color)"
+						label="Clone"
+						on:click={async () => {
+							await gitClone()
+						}}
+					/>
+				{/if}
 			</div>
 		{/if}
 	</div>
