@@ -30,6 +30,7 @@
 			subdir
 		)
 		if (not_cloned_file_manager) {
+			console.log(not_cloned_file_manager.datas)
 			return not_cloned_file_manager.datas
 		} else {
 			return []
@@ -168,7 +169,7 @@
 										class="text-font-color w-full overflow-hidden overflow-ellipsis"
 									>
 										<span class="text-nowrap"
-											>{'nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'}</span
+											>{item.log ? item.log: 'no log here'}</span
 										>
 									</div>
 								</td>
@@ -176,7 +177,7 @@
 									<div
 										class="text-font-color2 w-full overflow-hidden overflow-ellipsis"
 									>
-										<span class="text-nowrap">{'10 months ago'}</span>
+										<span class="text-nowrap">{item.date ? item.date: 'no date here'}</span>
 									</div>
 								</td>
 							</tr>

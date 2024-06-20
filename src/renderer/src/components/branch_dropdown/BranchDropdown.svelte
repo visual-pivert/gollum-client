@@ -58,7 +58,12 @@
 			selected_project = value
 			const fetched_branch = await fetchBranch(selected_project.repo_path)
 			console.log(fetched_branch)
-			defineBranch(fetched_branch[0])
+			if (is_local_project) {
+				const current_branch = await window.api.localCurrentBranch(selected_project.repo_path)
+				defineBranch(current_branch)
+			} else {
+				defineBranch(fetched_branch[0])
+			}
 		})
 
 		const branch_sub = rx_selected_branch.subscribe((value) => {

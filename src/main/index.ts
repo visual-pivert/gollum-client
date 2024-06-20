@@ -9,6 +9,8 @@ import { GollumGit } from './domain/gollum_git/GollumGit'
 import { GollumApi } from './domain/gollum_api/GollumApi'
 import { LocalRepo } from './domain/local_repo/LocalRepo'
 import { env } from './env'
+import { ProdRepo } from './domain/prod_repo/ProdRepo'
+import { ConfigFileGenerator } from './domain/prod_repo/ConfigFileGenerator'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -77,6 +79,10 @@ app.whenReady().then(() => {
 	ipcMain.handle('local:branch_list', async (_, sub_dir) => {
 		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
 		return await local_repo.getBranchList(sub_dir)
+	})
+	ipcMain.handle('local:current_branch', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return await local_repo.getCurrentBranch(sub_dir)
 	})
 	ipcMain.handle('local:checkout', async (_, sub_dir, branch_name) => {
 		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
@@ -244,6 +250,49 @@ app.whenReady().then(() => {
 			return await gollum_git.newBranch(branch_name)
 		} catch (error: any) {
 			return error.message
+		}
+	})
+
+
+	ipcMain.handle('prod:config-list', async (_) => {
+		try {
+			return await ProdRepo.listExistingConfig()
+		} catch(error: any) {
+			console.log(error)
+			return error.message
+		}
+	})
+
+	ipcMain.handle('prod:config-input', (_, template_name) => {
+		try {
+			const config_file_gen = new ConfigFileGenerator()
+			const path = env['TEMPLATE_PATH']
+			console.log(path + '/' + template_name)
+			config_file_gen.defineTemplate(path + '/' + template_name)
+			return config_file_gen.getAllTokens()
+		} catch(error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('prod:save-and-prod-config', async (_, repo_name, branch_name, config_name, template_name, config) => {
+		try {
+			let prod_repo = new ProdRepo(repo_name, branch_name)
+			await prod_repo.cleanProdDir()
+			prod_repo = await prod_repo.createConfig(config_name, config, template_name)
+			await prod_repo.putOnProduction()
+			await prod_repo.saveConfig()
+		} catch (error: any) {
+			console.log(error)
+		}
+	})
+
+	ipcMain.handle('prod:template_list', (_) => {
+		try {
+			return ProdRepo.getTemplateList(env['TEMPLATE_PATH'])
+		} catch (error: any) {
+			console.log(error)
+			return error
 		}
 	})
 

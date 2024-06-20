@@ -7,7 +7,7 @@ export type TemplateDetail = {
 	file_name: string
 }
 
-export class configFileGenerartor {
+export class ConfigFileGenerator {
 
 	public template_details: TemplateDetail[] = []
 
@@ -47,7 +47,19 @@ export class configFileGenerartor {
 		return buffer_out
 	}
 
-	private uniqueIt(buffers: GollumBuffer): GollumBuffer {
+	public getAllTokens () {
+		const buffers = this.getBuffers()
+		let tokens: string[] = []
+		for (const [_, values] of Object.entries(buffers)) {
+			for (const value of values) {
+				tokens = [...tokens, value.name]
+			}
+		}
+		const tokens_out = new Set(tokens)
+		return [...tokens_out]
+	}
+
+	public static uniqueIt(buffers: GollumBuffer): GollumBuffer {
 		const obj: { [key: string]: any } = {}
 		for (const buf of buffers) {
 			if (!obj[buf.name]) {
