@@ -7,10 +7,12 @@
 	import { rx_is_local_project, rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
 	import { right_buttons_events } from './right_aside/right_aside_buttons'
+	import { rx_ftp_connected } from './FTP/model'
 
 	let selected_project //rx
 	let selected_branch //rx
-	let is_local_project
+	let is_local_project //rx
+	let FTP_connected //rx
 	let logged_user
 
 	const gitPush = async () => {
@@ -52,7 +54,13 @@
 		const is_local_project_sub = rx_is_local_project.subscribe(
 			(value) => (is_local_project = value)
 		)
-		subscribers = [selected_branch_sub, selected_project_sub, is_local_project_sub]
+		const FTP_connected_sub = rx_ftp_connected.subscribe((value) => (FTP_connected = value))
+		subscribers = [
+			selected_branch_sub,
+			selected_project_sub,
+			is_local_project_sub,
+			FTP_connected_sub
+		]
 	})
 
 	onDestroy(() => {
@@ -60,11 +68,6 @@
 			sub.unsubscribe()
 		}
 	})
-
-	let FTP_connected = 'ftp.connected.com'
-	const disconnect = () => {
-		FTP_connected = ''
-	}
 </script>
 
 <div class="topbar relative z-50 flex justify-between">
@@ -113,7 +116,12 @@
 		<div class="flex items-center p-2 text-font-color2">
 			<i class="ri-server-line {FTP_connected ? 'text-green' : 'text-red'} text-lg mr-1"></i>
 			{#if FTP_connected}
-				<button title="Se déconnecter" on:click={disconnect}>
+				<button
+					title="Se déconnecter"
+					on:click={() => {
+						document.dispatchEvent(right_buttons_events.ftp)
+					}}
+				>
 					<span class="font-bold">ftp://</span>
 					{FTP_connected}
 				</button>

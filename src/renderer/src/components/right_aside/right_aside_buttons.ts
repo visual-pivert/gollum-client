@@ -4,7 +4,7 @@ import CommitsList from "../CommitsList.svelte";
 import { get } from "svelte/store";
 import { active_aside_component } from "../../store";
 import { activeAsideComponent } from "../../event";
-import Ftp from "../Ftp.svelte";
+import Ftp from "../FTP/Ftp.svelte";
 import MergePannel from "../MergePannel.svelte";
 import { notify, show_notif } from "../notification/store";
 
