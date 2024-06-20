@@ -18,8 +18,11 @@
 	let search_focus = false
 
 	$: result = branch_list.reduce((acc, branch) => {
-		if (branch.branch_name.toLowerCase().startsWith(to_search.toLowerCase()) &&
-			selected_branch.branch_name != branch.branch_name) {
+		if (
+			branch.branch_name.toLowerCase().startsWith(to_search.toLowerCase()) &&
+			selected_branch.branch_name != branch.branch_name
+		) {
+			// const tmp = { branch: branch, checked: false }
 			acc = [...acc, branch]
 		}
 		return acc
@@ -30,7 +33,7 @@
 		rx_selected_project.subscribe((value) => {
 			selected_project = value
 		})
-		rx_selected_branch.subscribe( async (value) => {
+		rx_selected_branch.subscribe(async (value) => {
 			selected_branch = value
 			await fetchLocalBranch()
 		})
@@ -39,8 +42,12 @@
 
 	let checked_branch = null
 
-	const merge =  async () => {
-		await window.api.gitMerge(selected_project.repo_path, { username: logged_user.username, password: logged_user.password }, checked_branch.branch_name)
+	const merge = async () => {
+		await window.api.gitMerge(
+			selected_project.repo_path,
+			{ username: logged_user.username, password: logged_user.password },
+			checked_branch.branch_name
+		)
 		rx_selected_project.next(selected_project)
 	}
 </script>
@@ -72,26 +79,26 @@
 		<ul class="ml-2">
 			{#each result as branch}
 				<li>
-					<input
-						type="radio"
-						name="merge"
-						id={branch.branch_name}
-						value={branch}
-						on:input={() => {
-							checked_branch = branch
-						}}
-						class="hidden"
-					/>
-					<label
-						for={branch.branch_name}
-						class="cursor-pointer flex gap-2 items-center p-1 px-2 rounded hover:bg-background4 opacity-80
+					<label for={branch.branch_name}>
+						<button
+							class="w-full cursor-pointer flex gap-1 items-center p-1 px-2 rounded hover:bg-background4 opacity-80
 							{branch == checked_branch ? 'bg-background4 opacity-100' : ''}"
-					>
-						<i
-							class="ri-git-branch-line
+							on:click={() => {
+								checked_branch = branch
+							}}
+						>
+							<i
+								class="ri-git-branch-line mr-3
 								{branch == checked_branch ? 'text-blue' : 'text-font-color'}"
-						></i>
-						{branch.branch_name}
+							></i>
+							{selected_branch.branch_name}
+							<!-- <i class="ri-arrow-left-line {branch == checked_branch ? 'text-blue' : 'text-font-color'}"></i> -->
+							<i
+								class="ri-arrow-left-double-line
+							{branch == checked_branch ? 'text-green' : 'text-font-color'}"
+							></i>
+							{branch.branch_name}
+						</button>
 					</label>
 				</li>
 			{/each}
@@ -101,7 +108,7 @@
 		<Buttons
 			label="Merge"
 			bg_color="--blue-btn"
-			on:click={async() => await merge()}
+			on:click={async () => await merge()}
 			disabled={!checked_branch}
 		/>
 	</div>

@@ -2,6 +2,8 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { rx_is_local_project, rx_selected_project } from '../project_dropdown/model'
 	import { rx_selected_branch } from '../branch_dropdown/model'
+	import moment from 'moment'
+	import _ from 'lodash'
 
 	// vars
 	let is_local_project //rx
@@ -177,7 +179,9 @@
 									<div
 										class="text-font-color2 w-full overflow-hidden overflow-ellipsis"
 									>
-										<span class="text-nowrap">{item.date ? item.date: 'no date here'}</span>
+										<span class="text-nowrap">{item.date ? _.capitalize(
+											moment(item.date).fromNow()
+										): 'no date here'}</span>
 									</div>
 								</td>
 							</tr>

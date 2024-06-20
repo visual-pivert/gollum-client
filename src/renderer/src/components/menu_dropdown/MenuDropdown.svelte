@@ -1,7 +1,8 @@
 <script>
 	import { openDropdown } from '../../event'
 	import Dropdown from '../Dropdown.svelte'
-	import { new_project } from '../new_project/store'
+	import NewProjectPage from '../new_project/NewProjectPage.svelte'
+	import { show_new_project_modal } from '../new_project/store'
 	import { active_menu_dropdown } from './store'
 </script>
 
@@ -19,13 +20,15 @@
 				<a
 					href="."
 					class="px-3 py-2 flex"
-					on:click|preventDefault={() => document.dispatchEvent(new_project)}
+					on:click|preventDefault={() => show_new_project_modal.set(true)}
 					>Nouveau Projet</a
 				>
 			</li>
 		</ul>
 	</div>
 </Dropdown>
+
+<NewProjectPage />
 
 <style>
 </style>

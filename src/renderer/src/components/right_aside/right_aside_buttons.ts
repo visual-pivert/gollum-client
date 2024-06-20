@@ -4,8 +4,9 @@ import CommitsList from "../CommitsList.svelte";
 import { get } from "svelte/store";
 import { active_aside_component } from "../../store";
 import { activeAsideComponent } from "../../event";
-import Ftp from "../Ftp.svelte";
+import Ftp from "../FTP/Ftp.svelte";
 import MergePannel from "../MergePannel.svelte";
+import { notify, show_notif } from "../notification/store";
 
 
 
@@ -21,7 +22,8 @@ const right_components: {name: string, component: any, btn_icon: string, btn_pos
     {name: 'commit_list', component: CommitsList, btn_icon: 'ri-list-check-2', btn_position: 'top', on_click: null},
     {name: 'merge', component: MergePannel, btn_icon: 'ri-git-merge-line', btn_position: 'top', on_click: null},
     {name: 'ftp', component: Ftp, btn_icon: 'ri-server-line', btn_position: 'top', on_click: null},
-    {name: 'notification', component: null, btn_icon: 'ri-notification-2-line', btn_position: 'bottom', on_click: () => {}},
+    {name: 'notification', component: null, btn_icon: 'ri-notification-2-line', btn_position: 'bottom', on_click: () => {document.dispatchEvent(show_notif)}},
+    {name: 'notifyy', component:null, btn_icon: 'ri-notification-badge-line', btn_position: 'bottom', on_click: () => {document.dispatchEvent(notify)}}
 ]
 
 

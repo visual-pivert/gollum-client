@@ -5,7 +5,7 @@
 	// import { current_page } from './store'
 	// import TestPage from './pages/TestPage.svelte'
 	import Index from './pages/Index.svelte'
-	import NotifContainer from './components/NotifContainer.svelte'
+	import NotifContainer from './components/notification/NotifContainer.svelte'
 
 	// const pages = {
 	// 	'login-page': LoginPage,

@@ -20,6 +20,18 @@ module.exports = {
     },
     extend: {
       spacing: {
+        '100vh': '100vh',
+        '90vh': '90vh',
+        '80vh': '80vh',
+        '75vh': '75vh',
+        '70vh': '70vh',
+        '60vh': '60vh',
+        '50vh': '50vh',
+        '40vh': '40vh',
+        '30vh': '30vh',
+        '25vh': '25vh',
+        '20vh': '20vh',
+        '10vh': '10vh',
         'notif-height': 'calc(100vh - 100px)',
         'notif-bottom': '24px',
         'notif-right': '42px'

@@ -14,13 +14,6 @@ export const selected_branch = writable('')
 
 export const current_directory_path: Writable<string[]> = writable([''])
 
-export const new_project_data: Writable<{[key: string]: any}> = writable({
-    project_name: "",
-    readme: "",
-    contributors: []
-})
-
-
 export const current_directory = writable([])
 
 export const is_local_project = writable(false)

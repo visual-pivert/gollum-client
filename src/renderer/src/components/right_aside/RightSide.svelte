@@ -8,7 +8,7 @@
 
 <div class="container">
 	{#if $active_aside_component}
-		<div class="content">
+		<div class="content relative">
 			<svelte:component this={contents[$active_aside_component]} />
 		</div>
 	{/if}
