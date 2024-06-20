@@ -2,6 +2,8 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { rx_is_local_project, rx_selected_project } from '../project_dropdown/model'
 	import { rx_selected_branch } from '../branch_dropdown/model'
+	import moment from 'moment'
+	import _ from 'lodash'
 
 	// vars
 	let is_local_project //rx
@@ -176,7 +178,11 @@
 									<div
 										class="text-font-color2 w-full overflow-hidden overflow-ellipsis"
 									>
-										<span class="text-nowrap">{'10 months ago'}</span>
+										<span class="text-nowrap"
+											>{_.capitalize(
+												moment('2013-04-20T20:00:00+0800').fromNow()
+											)}</span
+										>
 									</div>
 								</td>
 							</tr>

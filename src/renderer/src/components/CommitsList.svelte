@@ -3,6 +3,8 @@
 	import { fade } from 'svelte/transition'
 	import { rx_is_local_project, rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
+	import moment from 'moment'
+	import _ from 'lodash'
 
 	let commit_list = []
 	let is_local_project //rx
@@ -11,7 +13,10 @@
 	let logged_user
 
 	const fetchLocalCommit = async (repo_name) => {
-		const commit_list = await window.api.gitLog(repo_name, {username: logged_user.username, password: logged_user.passwrod})
+		const commit_list = await window.api.gitLog(repo_name, {
+			username: logged_user.username,
+			password: logged_user.passwrod
+		})
 		if (commit_list) {
 			return commit_list
 		} else {
@@ -20,7 +25,11 @@
 	}
 
 	const fetchNotClonedCommit = async (repo_name) => {
-		const commit_list = await window.api.apiListCommit(logged_user.access_token, repo_name, selected_branch.branch_name)
+		const commit_list = await window.api.apiListCommit(
+			logged_user.access_token,
+			repo_name,
+			selected_branch.branch_name
+		)
 		if (commit_list) {
 			return commit_list
 		} else {
@@ -39,18 +48,17 @@
 		console.log(commit_list)
 	}
 
-	onMount( async () => {
+	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
 
-		rx_selected_project.subscribe((value) => selected_project = value)
-		rx_is_local_project.subscribe((value) => is_local_project = value)
+		rx_selected_project.subscribe((value) => (selected_project = value))
+		rx_is_local_project.subscribe((value) => (is_local_project = value))
 
-		rx_selected_branch.subscribe( async (value) => {
+		rx_selected_branch.subscribe(async (value) => {
 			selected_branch = value
 			await fetchCommit()
 		})
 		await fetchCommit()
-
 	})
 
 	let active_commit = null
@@ -123,7 +131,7 @@
 			</div>
 			<p class="flex items-center mb-2">
 				<i class="ri-history-line mr-1"></i>
-				<span class="text-xs">{active_commit.date}</span>
+				<span class="text-xs">{_.capitalize(moment(active_commit.date).fromNow())}</span>
 			</p>
 			<p>{active_commit.message}</p>
 		</div>
