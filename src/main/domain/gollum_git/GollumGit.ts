@@ -90,7 +90,8 @@ export class GollumGit {
 
 	public async log() {
 		// TODO: Mise en place d'une partie interface pour eviter qu'un objet inconnu ressort de cette fonction
-		const log = await this.git_obj.log()
+		const log = await this.git_obj.log(['--relative-date'])
+		console.log(log)
 		return log
 	}
 
@@ -106,6 +107,10 @@ export class GollumGit {
 
 	public async merge(branch: string) {
 		await this.git_obj.merge([branch])
+	}
+
+	public async newBranch(branch_name: string) {
+		await this.git_obj.branch([branch_name])
 	}
 
 	private makeRemote(username: string, password: string, repo_path: string) {

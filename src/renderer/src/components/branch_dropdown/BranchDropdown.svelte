@@ -12,6 +12,7 @@
 	let selected_branch //rx
 	let is_local_project //rx
 	let logged_user
+	let new_branch_name = ''
 
 	// pure function
 	const fetchBranch = async (repo_name) => {
@@ -28,6 +29,7 @@
 		else return []
 	}
 
+
 	// Not pure function
 	const defineBranch = (branch) => {
 		rx_selected_branch.next(branch)
@@ -35,6 +37,14 @@
 
 	const onDropdownOpen = async () => {
 		branch_list = await fetchBranch(selected_project.repo_path)
+	}
+
+	const createNewBranch = async () => {
+		await window.api.gitNewBranch(
+			selected_project.repo_path,
+			{ username: logged_user.username, password: logged_user.password },
+			new_branch_name
+		)
 	}
 
 	// lifecycles
@@ -48,7 +58,12 @@
 			selected_project = value
 			const fetched_branch = await fetchBranch(selected_project.repo_path)
 			console.log(fetched_branch)
-			defineBranch(fetched_branch[0])
+			if (is_local_project) {
+				const current_branch = await window.api.localCurrentBranch(selected_project.repo_path)
+				defineBranch(current_branch)
+			} else {
+				defineBranch(fetched_branch[0])
+			}
 		})
 
 		const branch_sub = rx_selected_branch.subscribe((value) => {
@@ -68,8 +83,9 @@
 	function openModal() {
 		modal_opened = true
 	}
-	function colseModal() {
+	function closeModal() {
 		modal_opened = false
+		new_branch_name = ''
 	}
 </script>
 
@@ -119,12 +135,16 @@
 					type="text"
 					id="branch-name"
 					class="bg-transparent outline-none border focus:border-2 border-solid border-background3 focus:border-blue-btn rounded p-2 h-8 w-80"
+					bind:value={new_branch_name}
 				/>
 			</div>
 
 			<div class="flex gap-2 w-max self-end mt-3">
-				<Buttons label="Annuler" on:click={colseModal} />
-				<Buttons label="Créer" bg_color="--blue-btn" />
+				<Buttons label="Annuler" on:click={closeModal} />
+				<Buttons label="Créer" bg_color="--blue-btn" on:click={ async () => {
+					await createNewBranch()
+					closeModal()
+				}} />
 			</div>
 		</div>
 	</div>

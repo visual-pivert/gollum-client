@@ -22,20 +22,28 @@ export class LocalRepo {
   * @param {string} sub_dir_path
   * @returns {RepoTreeData[]}
   */
-	public getTree (sub_dir_path: string = ''): RepoTreeData[] {
+	public async getTree (sub_dir_path: string = ''): RepoTreeData[] {
 		const dir_content = fs.readdirSync(this.makePath(sub_dir_path), {
 			withFileTypes: true
 		})
 
 		const out: RepoTreeData[] = []
 
+		const simple_git = simpleGit(this.makePath(sub_dir_path))
+
 		for (const element of dir_content) {
 			if(this.ignored_files.indexOf(element.name) < 0) {
+				const log = await simple_git.log(['--format=%aI<<%s', '-n 1', '--', element.name])
+				const logs = log ? log.all[0].hash.split('<<') : []
 				const tree_data: RepoTreeData = {
 					name: element.name,
-					type: element.isDirectory() ? 'tree' : 'blob'
+					type: element.isDirectory() ? 'tree' : 'blob',
+					date: (logs.length > 1) ? logs[0] : '',
+					log: (logs.length > 1) ? logs[1] : ''
 				}
 				out.push(tree_data)
+
+				console.log(log)
 			}
 		}
 
@@ -76,6 +84,13 @@ export class LocalRepo {
 			branch_out.push(branch_data)
 		}
 		return branch_out
+	}
+
+	public async getCurrentBranch (sub_dir_path: string): Promise<RepoBranchData> {
+		const simple_git = simpleGit(this.makePath(sub_dir_path))
+		const branches_details = await simple_git.branchLocal()
+		const branch_data: RepoBranchData = { branch_name: branches_details.current }
+		return branch_data
 	}
 
 	public async checkout (sub_dir_path: string, branch_name: string) {

@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest'
 import { configFileGenerartor } from '../ConfigFileGenerator'
 import { ProdRepo } from '../ProdRepo'
+import { env } from '../../../env'
 
 
 // test('Prod repo save config', async () => {
@@ -19,9 +20,18 @@ import { ProdRepo } from '../ProdRepo'
 // 	const config = await prod_repo.useExistingConfig('wordpress')
 // })
 
-test ('Prod repo mise en production', async () => {
-	const prod_repo = new ProdRepo('usr/wordpress', 'master')
-	await prod_repo.useExistingConfig('wordpress')
-	await prod_repo.cleanProdDir()
-	await prod_repo.putOnProduction()
+// test ('Prod repo mise en production', async () => {
+// 	const prod_repo = new ProdRepo('usr/wordpress', 'master')
+// 	await prod_repo.useExistingConfig('wordpress')
+// 	await prod_repo.cleanProdDir()
+// 	await prod_repo.putOnProduction()
+// })
+
+// test ('List configuration', async () => {
+// 	const existing_config = await ProdRepo.listExistingConfig('wordpress')
+// 	console.log(existing_config)
+// })
+
+test ('List template', () => {
+	console.log(ProdRepo.getTemplateList(env['TEMPLATE_PATH']))
 })

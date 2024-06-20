@@ -27,12 +27,27 @@ const api = {
     gitPull: (basedir: string, credentials:{username: string, password: string}, remote: string, branch_name: string) => ipcRenderer.invoke('git:pull', basedir, credentials, remote, branch_name),
     gitStatus: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:status', basedir, credentials),
     gitLog: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:log', basedir, credentials),
+	gitNewBranch: (basedir: string, credentials:{username:string, password: string}, branch_name: string) => ipcRenderer.invoke('git:new-branch', basedir, credentials, branch_name),
 
 	// La partie local
 	localRepoList: () => ipcRenderer.invoke('local:list'),
 	localRepoTree: (sub_dir: string) => ipcRenderer.invoke('local:tree', sub_dir),
 	localBranchList: (sub_dir: string) => ipcRenderer.invoke('local:branch_list', sub_dir),
 	localCheckout: (sub_dir: string, branch_name: string) => ipcRenderer.invoke('local:checkout', sub_dir, branch_name),
+	localCurrentBranch: (sub_dir: string) => ipcRenderer.invoke('local:current_branch', sub_dir),
+
+	//La partie production
+	prodConfigList: () => ipcRenderer.invoke('prod:config-list'),
+	prodListInputConfig: (template_name: string) => ipcRenderer.invoke('prod:config-input', template_name),
+	prodSaveAndPutConfigOnProduction: (repo_name: string, branch_name: string, config_name: string, template_name: string, config: { [key: string]: string }) => ipcRenderer.invoke(
+		'prod:save-and-prod-config',
+		repo_name,
+		branch_name,
+		config_name,
+		template_name,
+		config
+	),
+	localTemplateList: () => ipcRenderer.invoke('prod:template_list'),
 
 }
 

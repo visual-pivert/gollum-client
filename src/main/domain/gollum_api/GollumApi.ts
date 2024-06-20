@@ -20,7 +20,9 @@ export type RepoData = {
 
 export type RepoTreeData = {
 	name: string,
-	type: 'blob' | 'tree'
+	type: 'blob' | 'tree',
+	date: string,
+	log: string
 }
 
 export type RepoBlobData = {

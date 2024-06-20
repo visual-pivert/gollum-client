@@ -7,8 +7,10 @@ export const env = {
     VAR_PATH: 'var',
 	// LOCAL_REPO_PATH: '/home/eliome/Projects/gollum_local_repository',
 	LOCAL_REPO_PATH: '/home/nyr/test_gollum/projects',
-	LOCAL_PROD_PATH: '/home/eliome/Projects/gollum_local_prod', // attention! can kill your sys
-	TEMPLATE_PATH: '/home/eliome/Projects/gollum_template',
+	// LOCAL_PROD_PATH: '/home/eliome/Projects/gollum_local_prod', // attention! can kill your sys
+	LOCAL_PROD_PATH: '/home/nyr/test_gollum/prod', // attention! can kill your sys
+	// TEMPLATE_PATH: '/home/eliome/Projects/gollum_template',
+	TEMPLATE_PATH: '/home/nyr/test_gollum/template',
 	// TEMP_PATH: '/home/eliome/Projects/gollum_local_temp',
 	TEMP_PATH: '/home/nyr/test_gollum/tmp',
 	PROD_DB_PATH: 'prod_config.db',
