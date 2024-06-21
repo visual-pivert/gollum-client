@@ -33,8 +33,14 @@ export class LocalRepo {
 
 		for (const element of dir_content) {
 			if(this.ignored_files.indexOf(element.name) < 0) {
-				const log = await simple_git.log(['--format=%aI<<%s', '-n 1', '--', element.name])
-				const logs = log ? log.all[0].hash.split('<<') : []
+				let log = {}
+				let logs = []
+				try {
+					log = await simple_git.log(['--format=%aI<<%s', '-n 1', '--', element.name])
+					logs = log ? log.all[0].hash.split('<<') : []
+				} catch (error) {
+					logs = []
+				}
 				const tree_data: RepoTreeData = {
 					name: element.name,
 					type: element.isDirectory() ? 'tree' : 'blob',
