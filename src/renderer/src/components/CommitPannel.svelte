@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte'
 	import Buttons from './Buttons.svelte'
-	import { rx_selected_project } from './project_dropdown/model'
+	import { rx_is_local_project, rx_selected_project } from './project_dropdown/model'
 	import { rx_selected_branch } from './branch_dropdown/model'
 
 	//vars
@@ -10,6 +10,7 @@
 	let selected_project
 	let selected_files = []
 	let commit_message = ''
+	let is_local_project
 
 	// pure function
 	const fetchChangedFiles = async (repo_name) => {
@@ -18,7 +19,7 @@
 			password: logged_user.password
 		})
 
-		if (status) {
+		if (status && is_local_project) {
 			return status
 		} else {
 			return {}
@@ -61,6 +62,7 @@
 	onMount(async () => {
 		logged_user = await window.api.getLoggedUser()
 		rx_selected_project.subscribe((value) => (selected_project = value))
+		rx_is_local_project.subscribe((value) => is_local_project = value)
 		rx_selected_branch.subscribe(async (value) => await defineChangedFiles())
 	})
 
