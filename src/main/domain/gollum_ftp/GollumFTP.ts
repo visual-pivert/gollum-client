@@ -1,6 +1,7 @@
 import { Client, FileInfo } from "basic-ftp";
 
 type GollumFTPResult = {
+    is_success: number,
     code: number | string,
     message: string
 }
@@ -8,8 +9,8 @@ type GollumFTPResult = {
 
 export class GollumFTP {
     private static client = new Client()
-    private static host
-    
+    private static host: string
+
     /**
      * Get access to an FTP server
      *
@@ -21,15 +22,18 @@ export class GollumFTP {
      */
     public static async connectFTP(host: string, username: string, password: string, port?:number): Promise<GollumFTPResult> {
         // GollumFTP.client.ftp.verbose = true
+        GollumFTP.host = host
+        
         let res
         try {
             res = await GollumFTP.client.access({host: host, port: port, user: username, password: password})
-            GollumFTP.host = host
-            res.message = `Connection à ${host} réussie`
+            res.is_success = 1
+            res.message =  `Connection à ${host} réussie`
         } catch (error: any) {
             res = error
+            res.is_success = 0
         } finally {
-            return {code: res.code, message: res.message.replace(/^\d* /g, '')}
+            return {is_success: res.is_success, code: res.code, message: res.message.replace(/^\d* /g, '')}
         }
     }
 
@@ -40,9 +44,9 @@ export class GollumFTP {
     public static disconnectFTP(): GollumFTPResult {
         try {
             GollumFTP.client.close()
-            return {code: '', message: `${GollumFTP.host} déconnecté`}
+            return {is_success: 1, code: '', message: `${GollumFTP.host} déconnecté`}
         } catch (error: any) {
-            return {code: error.code, message: error.message.replace(/^\d* /g, '')}
+            return {is_success: 0, code: error.code, message: error.message.replace(/^\d* /g, '')}
         }
     }
 
@@ -54,11 +58,11 @@ export class GollumFTP {
      * @returns {Promise<FileInfo[] | GollumFTPResult>} List if success, otherwise {error_code, error_message}
      */
     public static async listDir(path?: string): Promise<FileInfo[] | GollumFTPResult> {
-        try {
+        // try {
             return await GollumFTP.client.list(path)
-        } catch (error: any) {
-            return {code: error.code, message: error.message.replace(/^\d* /g, '')}
-        }
+        // } catch (error: any) {
+        //     return {is_success: 0, code: error.code, message: error.message.replace(/^\d* /g, '')}
+        // }
     }
 
     
@@ -69,12 +73,12 @@ export class GollumFTP {
      * @returns {Promise<FileInfo[] | GollumFTPResult>} List if success, otherwise {error_code, error_message}
      */
     public static async changeDir(path: string): Promise<FileInfo[] | GollumFTPResult> {
-        try {
+        // try {
             await GollumFTP.client.cd(path)
-            return GollumFTP.listDir()
-        } catch (error: any) {
-            return {code: error.code, message: error.message.replace(/^\d* /g, '')}
-        }
+            return await GollumFTP.listDir()
+        // } catch (error: any) {
+        //     return {is_success: 0, code: error.code, message: error.message.replace(/^\d* /g, '')}
+        // }
     }
 
     
@@ -84,7 +88,7 @@ export class GollumFTP {
      * @returns {Promise<string>}
      */
     public static async pwd(): Promise<string> {
-        return GollumFTP.client.pwd()
+        return await GollumFTP.client.pwd()
     }
 
     
@@ -95,14 +99,16 @@ export class GollumFTP {
      * @returns {Promise<GollumFTPResult>}
      */
     public static async send(from: string): Promise<GollumFTPResult> {
+        console.log(from)
         let res
         try {
             await GollumFTP.client.uploadFromDir(from, from.split('/').at(-1))
-            res = {code: 226, message: 'Téléchargement terminé'}
+            res = {is_success: 1, code: 226, message: 'Téléchargement terminé'}
         } catch (error: any) {
-            res = error           
+            res = error  
+            res.is_success = 0         
         } finally {
-            return {code: res.code, message: res.message.replace(/^\d* /g, '')}
+            return {is_success: res.is_success, code: res.code, message: res.message.replace(/^\d* /g, '')}
         }
     }
 

@@ -299,8 +299,7 @@ app.whenReady().then(() => {
 
 	// IPC gollum ftp (gftp)
 	ipcMain.handle('gftp:connectFTP', async (_, host, username, password, port?) => {
-		const res = await GollumFTP.connectFTP(host, username, password, port)
-		return res
+		return await GollumFTP.connectFTP(host, username, password, port)
 	})
 
 	ipcMain.handle('gftp:disconnectFTP', (_) => {
@@ -309,13 +308,23 @@ app.whenReady().then(() => {
 	})
 
 	ipcMain.handle('gftp:listDir', async (_, path) => {
-		const res = await GollumFTP.listDir(path)
-		return res
+		try {
+			const res = await GollumFTP.listDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
 	})
 
 	ipcMain.handle('gftp:changeDir', async (_, path) => {
-		const res = await GollumFTP.changeDir(path)
-		return res
+		try {
+			const res = await GollumFTP.changeDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
 	})
 
 	ipcMain.handle('gftp:pwd', async (_) => {
@@ -324,7 +333,9 @@ app.whenReady().then(() => {
 	})
 
 	ipcMain.handle('gftp:send', async (_, path) => {
-		const res = await GollumFTP.send(path)
+		const root = env['LOCAL_REPO_PATH']
+		console.log(root + '/' + path)
+		const res = await GollumFTP.send(root + '/' + path)
 		return res
 	})
 

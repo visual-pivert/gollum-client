@@ -50,12 +50,12 @@ const api = {
 	localTemplateList: () => ipcRenderer.invoke('prod:template_list'),
 
 	// La partie FTP
-	connectFTP: (host: string, username: string, password: string, port?: string) => {ipcRenderer.invoke('gftp:connectFTP', host, username, password, port)},
-	disconnectFTP: () => {ipcRenderer.invoke('gftp:connectFTP')},
-	listDirFTP: (path?: string) => {ipcRenderer.invoke('gftp:listDir', path)},
-	changeDirFTP: (path: string) => {ipcRenderer.invoke('gftp:changeDir', path)},
-	pwdFTP: () => {ipcRenderer.invoke('gftp:pwd')},
-	sendFTP: (from: string) => {ipcRenderer.invoke('gftp:send', from)}
+	connectFTP: (host: string, username: string, password: string, port?: string) => ipcRenderer.invoke('gftp:connectFTP', host, username, password, port),
+	disconnectFTP: () => ipcRenderer.invoke('gftp:connectFTP'),
+	listDirFTP: (path?: string) => ipcRenderer.invoke('gftp:listDir', path),
+	changeDirFTP: (path: string) => ipcRenderer.invoke('gftp:changeDir', path),
+	pwdFTP: () => ipcRenderer.invoke('gftp:pwd'),
+	sendFTP: (from: string) => ipcRenderer.invoke('gftp:send', from)
 
 }
 
