@@ -11,6 +11,7 @@ import { LocalRepo } from './domain/local_repo/LocalRepo'
 import { env } from './env'
 import { ProdRepo } from './domain/prod_repo/ProdRepo'
 import { ConfigFileGenerator } from './domain/prod_repo/ConfigFileGenerator'
+import { GollumFTP } from './domain/gollum_ftp/GollumFTP'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -294,6 +295,48 @@ app.whenReady().then(() => {
 			console.log(error)
 			return error
 		}
+	})
+
+	// IPC gollum ftp (gftp)
+	ipcMain.handle('gftp:connectFTP', async (_, host, username, password, port?) => {
+		return await GollumFTP.connectFTP(host, username, password, port)
+	})
+
+	ipcMain.handle('gftp:disconnectFTP', (_) => {
+		const res = GollumFTP.disconnectFTP()
+		return res
+	})
+
+	ipcMain.handle('gftp:listDir', async (_, path) => {
+		try {
+			const res = await GollumFTP.listDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
+	})
+
+	ipcMain.handle('gftp:changeDir', async (_, path) => {
+		try {
+			const res = await GollumFTP.changeDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
+	})
+
+	ipcMain.handle('gftp:pwd', async (_) => {
+		const res = await GollumFTP.pwd()
+		return res
+	})
+
+	ipcMain.handle('gftp:send', async (_, path) => {
+		const root = env['LOCAL_REPO_PATH']
+		console.log(root + '/' + path)
+		const res = await GollumFTP.send(root + '/' + path)
+		return res
 	})
 
 	createWindow()
