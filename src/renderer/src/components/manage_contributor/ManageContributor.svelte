@@ -57,18 +57,18 @@
 		<div>
 			<ul class="contributor-container flex gap-2 flex-wrap max-h-30vh overflow-auto">
 				{#each $project_data.contributors as contributor}
-					<ul>
+					<li>
 						<div
 							class="flex gap-1 items-center p-2 border border-solid border-background3 rounded hover:bg-background4"
 						>
-							<img
+							<!-- <img
 								src=""
 								alt=""
 								class="w-5 h-5 border border-solid border-background4 outline-none rounded-full"
-							/>
-							<span class="mr-2">{contributor.username}</span>
+							/> -->
+							<span class="mx-2 text-font-color2">{contributor.username}</span>
 							<i
-								class="ri-close-large-line opacity-50 hover:opacity-1 hover:text-red cursor-pointer"
+								class="ri-close-large-line text-font-color3 hover:opacity-1 hover:text-red cursor-pointer"
 								on:click={() => {
 									removeContributor(contributor)
 								}}
@@ -77,7 +77,7 @@
 								tabindex="0"
 							></i>
 						</div>
-					</ul>
+					</li>
 				{/each}
 			</ul>
 		</div>

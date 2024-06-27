@@ -53,7 +53,8 @@
 	.center-container {
 		width: max(min(100%, 7in), 2in);
 		/* width: max(600px, 65%); */
-		height: max-content;
+		/* height: max-content; */
+		height: 100%;
 		padding: 5px 6px;
 		margin: 0 auto;
 	}
