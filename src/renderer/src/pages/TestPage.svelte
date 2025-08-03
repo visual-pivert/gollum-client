@@ -1,5 +1,6 @@
 <script>
-    import { FormUtil } from "#renderer/utils/FormUtil"
+    import { FormUtil } from "../utils/FormUtil"
+    
     let tree
     let blob
     $: real_tree = tree
@@ -17,7 +18,7 @@
 
 <div class="test-tree">
     <form action="" on:submit|preventDefault={ async (e) => {
-        const form_value = FormUtil.getFormData(e.target)
+        // const form_value = FormUtil.getFormData(e.target)
         // tree = await window.api.apiRepoTree(
         //     form_value['access_token'], 
         //     form_value['repo_path'],
@@ -37,7 +38,7 @@
 </div>
 <div class="test-blob">
     <form action="" on:submit|preventDefault={ async (e) => {
-        const form_value = FormUtil.getFormData(e.target)
+        // const form_value = FormUtil.getFormData(e.target)
         blob = await window.api.apiRepoBlob(
             'eyJ1c2VybmFtZSI6ICJ1c2VybmFtZSIsICJfaWQiOiAzNDg5NSwgIl90aW1lc3RhbXAiOiAxNzE2MjczNDQwfQ==',
             'username/new_repo2',

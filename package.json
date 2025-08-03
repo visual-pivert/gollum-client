@@ -5,10 +5,6 @@
 	"main": "./out/main/index.js",
 	"author": "example.com",
 	"homepage": "https://electron-vite.org",
-	"imports": {
-		"#renderer*": "./src/renderer/src/*",
-		"#main*": "./src/main/*"
-	},
 	"scripts": {
 		"format": "prettier --plugin prettier-plugin-svelte --write .",
 		"lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -29,10 +25,16 @@
 		"@electron-toolkit/preload": "^3.0.0",
 		"@electron-toolkit/utils": "^3.0.0",
 		"axios": "^1.6.8",
+		"basic-ftp": "^5.0.5",
 		"electron-updater": "^6.1.7",
+		"lodash": "^4.17.21",
+		"moment": "^2.30.1",
 		"node-fetch": "^3.3.2",
 		"remixicon": "^4.2.0",
-		"simple-git": "^3.24.0"
+		"rxjs": "^7.8.1",
+		"simple-git": "^3.24.0",
+		"sqlite": "^5.1.1",
+		"sqlite3": "^5.1.7"
 	},
 	"devDependencies": {
 		"@electron-toolkit/eslint-config-prettier": "^2.0.0",
@@ -41,7 +43,6 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.1",
 		"@types/node": "^18.19.9",
 		"autoprefixer": "^10.4.19",
-		"chai": "^5.1.1",
 		"electron": "^28.2.0",
 		"electron-builder": "^24.9.1",
 		"electron-vite": "^2.0.0",

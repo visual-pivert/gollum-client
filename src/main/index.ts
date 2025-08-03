@@ -2,11 +2,16 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { Auth } from '#main/domain/auth/Auth'
-import { Account } from '#main/domain/account/Account'
-import { init } from '#main/init'
-import { GollumGit } from '#main/domain/gollum_git/GollumGit'
+import { Auth } from './domain/auth/Auth'
+import { Account } from './domain/account/Account'
+import { init } from './init'
+import { GollumGit } from './domain/gollum_git/GollumGit'
 import { GollumApi } from './domain/gollum_api/GollumApi'
+import { LocalRepo } from './domain/local_repo/LocalRepo'
+import { env } from './env'
+import { ProdRepo } from './domain/prod_repo/ProdRepo'
+import { ConfigFileGenerator } from './domain/prod_repo/ConfigFileGenerator'
+import { GollumFTP } from './domain/gollum_ftp/GollumFTP'
 
 function createWindow(): void {
 	// Create the browser window.
@@ -19,8 +24,11 @@ function createWindow(): void {
 		webPreferences: {
 			preload: join(__dirname, '../preload/index.js'),
 			sandbox: false
-		}
+		},
+		useContentSize: false
 	})
+
+	mainWindow.setMinimumSize(670, 360)
 
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.show()
@@ -60,8 +68,31 @@ app.whenReady().then(() => {
 	// IPC test
 	ipcMain.on('ping', () => console.log('pong'))
 
+	// IPC local(local)
+	ipcMain.handle('local:list', async (_) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getLocalRepoList()
+	})
+	ipcMain.handle('local:tree', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return local_repo.getTree(sub_dir)
+	})
+	ipcMain.handle('local:branch_list', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return await local_repo.getBranchList(sub_dir)
+	})
+	ipcMain.handle('local:current_branch', async (_, sub_dir) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		return await local_repo.getCurrentBranch(sub_dir)
+	})
+	ipcMain.handle('local:checkout', async (_, sub_dir, branch_name) => {
+		const local_repo = new LocalRepo(env['LOCAL_REPO_PATH'])
+		await local_repo.checkout(sub_dir, branch_name)
+	})
+
     // IPC gollum api(gapi)
-	ipcMain.handle('gapi:login-submit',async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
+	ipcMain.handle('gapi:login-submit', async (_, form_data) => await Auth.login(form_data['username'], form_data['password']))
+	ipcMain.handle('gapi:logged-user', async (_) => await Auth.getLoggedUser())
     ipcMain.handle('gapi:signup-submit', async (_, form_data) => await Account.createAccount(form_data['username'], form_data['password'], form_data['cpassword'], form_data['email']))
 
     ipcMain.handle('gapi:tree', async (_, access_token, repo_path, branch, tree_path) => {
@@ -79,11 +110,59 @@ app.whenReady().then(() => {
             return error.message
         }
     })
-    
+
+	ipcMain.handle('gapi:list', async (_, access_token) => {
+		try {
+			return await GollumApi.listRepo(access_token)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:branches', async (_, access_token, repo_path) => {
+		try {
+			return await GollumApi.listBranches(access_token, repo_path)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:log', async (_, access_token, repo_path, branch) => {
+		try {
+			return await GollumApi.listCommit(access_token, repo_path, branch)
+		} catch (error : any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:list-user', async (_, access_token) => {
+		try {
+			return await GollumApi.listUser(access_token)
+		} catch (error : any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:create-repo', async (_, access_token, username, password ,repo_name) => {
+		try {
+			return await GollumApi.createRepo(access_token, username, password, repo_name)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('gapi:add-contrib', async (_, access_token, username, repo_path) => {
+		try {
+			return await GollumApi.addContrib(access_token, username, repo_path)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
 
     //IPC git
     ipcMain.handle('git:commit', async (_, basedir, credentials, message, file_or_dir_to_add, amend) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.commit(message, file_or_dir_to_add, amend)
             return "OK"
@@ -103,9 +182,10 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:merge', async(_, basedir, credentials, branch) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
-            await gollum_git.merge(branch)
+			await gollum_git.merge(branch)
+			console.log(env['LOCAL_REPO_PATH'] + '/' + basedir)
             return "OK"
         } catch(error: any) {
             return error.message
@@ -113,17 +193,21 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:clone', async(_, basedir, credentials, repo_path, local_path) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
+		let message
         try {
-            await gollum_git.clone(repo_path, local_path)
-            return "OK"
+            await gollum_git.clone(env['REPO_LINK'] + '/' + repo_path, local_path)
+            message = 'OK'
         } catch (error: any) {
-            return error.message
-        }
+            message = error
+        } finally {
+			return message
+		}
     })
 
     ipcMain.handle('git:push', async (_, basedir, credentials, remote, branch_name) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+		console.log(env['LOCAL_REPO_PATH'] + '/' + basedir)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.push(remote, branch_name)
             return "OK"
@@ -133,7 +217,7 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:pull', async (_, basedir, credentials, remote, branch_name) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             await gollum_git.pull(remote, branch_name)
             return "OK"
@@ -143,23 +227,117 @@ app.whenReady().then(() => {
     })
 
     ipcMain.handle('git:status', async(_, basedir, credentials) => {
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
-            return await gollum_git.status()
+			const status = await gollum_git.status()
+            return status
         } catch (error: any) {
             return error.message
         }
     })
 
     ipcMain.handle('git:log', async(_, basedir, credentials) => {
-        console.log(basedir, credentials)
-        const gollum_git = new GollumGit(basedir, credentials)
+        const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
         try {
             return await gollum_git.log()
         } catch (error: any) {
             return error.message
         }
-    }) 
+    })
+
+	ipcMain.handle('git:new-branch', async(_, basedir, credentials, branch_name) => {
+		const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'] + '/' + basedir, credentials)
+		try {
+			return await gollum_git.newBranch(branch_name)
+		} catch (error: any) {
+			return error.message
+		}
+	})
+
+
+	ipcMain.handle('prod:config-list', async (_) => {
+		try {
+			return await ProdRepo.listExistingConfig()
+		} catch(error: any) {
+			console.log(error)
+			return error.message
+		}
+	})
+
+	ipcMain.handle('prod:config-input', (_, template_name) => {
+		try {
+			const config_file_gen = new ConfigFileGenerator()
+			const path = env['TEMPLATE_PATH']
+			console.log(path + '/' + template_name)
+			config_file_gen.defineTemplate(path + '/' + template_name)
+			return config_file_gen.getAllTokens()
+		} catch(error: any) {
+			return error.message
+		}
+	})
+
+	ipcMain.handle('prod:save-and-prod-config', async (_, repo_name, branch_name, config_name, template_name, config) => {
+		try {
+			let prod_repo = new ProdRepo(repo_name, branch_name)
+			await prod_repo.cleanProdDir()
+			prod_repo = await prod_repo.createConfig(config_name, config, template_name)
+			await prod_repo.putOnProduction()
+			await prod_repo.saveConfig()
+		} catch (error: any) {
+			console.log(error)
+		}
+	})
+
+	ipcMain.handle('prod:template_list', (_) => {
+		try {
+			return ProdRepo.getTemplateList(env['TEMPLATE_PATH'])
+		} catch (error: any) {
+			console.log(error)
+			return error
+		}
+	})
+
+	// IPC gollum ftp (gftp)
+	ipcMain.handle('gftp:connectFTP', async (_, host, username, password, port?) => {
+		return await GollumFTP.connectFTP(host, username, password, port)
+	})
+
+	ipcMain.handle('gftp:disconnectFTP', (_) => {
+		const res = GollumFTP.disconnectFTP()
+		return res
+	})
+
+	ipcMain.handle('gftp:listDir', async (_, path) => {
+		try {
+			const res = await GollumFTP.listDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
+	})
+
+	ipcMain.handle('gftp:changeDir', async (_, path) => {
+		try {
+			const res = await GollumFTP.changeDir(path)
+			return res
+		} catch (error) {
+			console.log(error);
+			return error
+		}
+	})
+
+	ipcMain.handle('gftp:pwd', async (_) => {
+		const res = await GollumFTP.pwd()
+		return res
+	})
+
+	ipcMain.handle('gftp:send', async (_, path) => {
+		const root = env['LOCAL_REPO_PATH']
+		console.log(root + '/' + path)
+		const res = await GollumFTP.send(root + '/' + path)
+		return res
+	})
 
 	createWindow()
 

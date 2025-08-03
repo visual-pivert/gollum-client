@@ -6,9 +6,16 @@ const api = {
 
     // La partie api de gollum
 	loginSubmit: (login_value: {}) => ipcRenderer.invoke('gapi:login-submit', login_value),
+	getLoggedUser: () => ipcRenderer.invoke('gapi:logged-user'),
     signupSubmit: (signup_value: {}) => ipcRenderer.invoke('gapi:signup-submit', signup_value),
     apiRepoTree: (access_token: string, repo_path: string, branch: string, tree_path: string) => ipcRenderer.invoke('gapi:tree', access_token, repo_path, branch, tree_path),
     apiRepoBlob: (access_token: string, repo_path: string, branch: string, file_path: string) => ipcRenderer.invoke('gapi:blob', access_token, repo_path, branch, file_path),
+	apiRepoList: (access_token: string) => ipcRenderer.invoke('gapi:list', access_token),
+	apiListBranches: (access_token: string, repo_path: string) => ipcRenderer.invoke('gapi:branches', access_token, repo_path),
+	apiListCommit: (access_token: string, repo_path: string, branch: string) => ipcRenderer.invoke('gapi:log', access_token, repo_path, branch),
+	apiListUser: (access_token: string) => ipcRenderer.invoke('gapi:list-user', access_token),
+	apiCreateRepo: (access_token: string, username: string, password: string, repo_name: string) => ipcRenderer.invoke('gapi:create-repo', access_token, username, password, repo_name),
+	apiAddContrib: (access_token: string, username: string, repo_path: string) => ipcRenderer.invoke('gapi:add-contrib', access_token, username, repo_path),
 
 
     // La partie GIT
@@ -20,6 +27,35 @@ const api = {
     gitPull: (basedir: string, credentials:{username: string, password: string}, remote: string, branch_name: string) => ipcRenderer.invoke('git:pull', basedir, credentials, remote, branch_name),
     gitStatus: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:status', basedir, credentials),
     gitLog: (basedir: string, credentials:{username: string, password: string}) => ipcRenderer.invoke('git:log', basedir, credentials),
+	gitNewBranch: (basedir: string, credentials:{username:string, password: string}, branch_name: string) => ipcRenderer.invoke('git:new-branch', basedir, credentials, branch_name),
+
+	// La partie local
+	localRepoList: () => ipcRenderer.invoke('local:list'),
+	localRepoTree: (sub_dir: string) => ipcRenderer.invoke('local:tree', sub_dir),
+	localBranchList: (sub_dir: string) => ipcRenderer.invoke('local:branch_list', sub_dir),
+	localCheckout: (sub_dir: string, branch_name: string) => ipcRenderer.invoke('local:checkout', sub_dir, branch_name),
+	localCurrentBranch: (sub_dir: string) => ipcRenderer.invoke('local:current_branch', sub_dir),
+
+	//La partie production
+	prodConfigList: () => ipcRenderer.invoke('prod:config-list'),
+	prodListInputConfig: (template_name: string) => ipcRenderer.invoke('prod:config-input', template_name),
+	prodSaveAndPutConfigOnProduction: (repo_name: string, branch_name: string, config_name: string, template_name: string, config: { [key: string]: string }) => ipcRenderer.invoke(
+		'prod:save-and-prod-config',
+		repo_name,
+		branch_name,
+		config_name,
+		template_name,
+		config
+	),
+	localTemplateList: () => ipcRenderer.invoke('prod:template_list'),
+
+	// La partie FTP
+	connectFTP: (host: string, username: string, password: string, port?: string) => ipcRenderer.invoke('gftp:connectFTP', host, username, password, port),
+	disconnectFTP: () => ipcRenderer.invoke('gftp:connectFTP'),
+	listDirFTP: (path?: string) => ipcRenderer.invoke('gftp:listDir', path),
+	changeDirFTP: (path: string) => ipcRenderer.invoke('gftp:changeDir', path),
+	pwdFTP: () => ipcRenderer.invoke('gftp:pwd'),
+	sendFTP: (from: string) => ipcRenderer.invoke('gftp:send', from)
 
 }
 

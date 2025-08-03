@@ -1,5 +1,4 @@
 import fs from 'node:fs'
-import { json } from 'stream/consumers'
 
 export interface IGolSession {
     persist(),
@@ -11,6 +10,8 @@ export interface IGolSession {
 }
 
 export class GolSession implements IGolSession {
+    public db_path: string
+    public data: Object
     constructor(db_path: string){
         this.db_path = db_path
         this.data = this._read()

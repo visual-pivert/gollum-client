@@ -1,0 +1,136 @@
+<script>
+	import { onMount } from 'svelte'
+	import { openDropdown } from '../../event'
+	import { search_result_contributor } from './store'
+
+	let users = []
+
+	let logged_user
+
+	const fetchUsers = async () => {
+		const u = await window.api.apiListUser(logged_user.access_token)
+		console.log(u)
+		return u.datas
+	}
+
+	const defineUsers = async () => {
+		users = await fetchUsers()
+	}
+
+	onMount(async () => {
+		logged_user = await window.api.getLoggedUser()
+		await defineUsers()
+	})
+
+	let to_search = ''
+	let search_focus = false
+
+	$: result = users.reduce((acc, user) => {
+		if (user.username.toLowerCase().startsWith(to_search.toLowerCase())) {
+			acc = [...acc, user]
+		}
+		return acc
+	}, [])
+
+	export let project_data // TYPE WRITABLE
+
+	function addContributor(user) {
+		if (
+			!$project_data.contributors.some((contributor) => contributor.username == user.username)
+		) {
+			$project_data.contributors = [...$project_data.contributors, user]
+		}
+	}
+
+	function removeContributor(user) {
+		delete $project_data.contributors[$project_data.contributors.indexOf(user)]
+		$project_data.contributors = [...$project_data.contributors].filter((user) => {
+			return user != undefined
+		})
+		console.log($project_data.contributors)
+	}
+</script>
+
+<div class="flex flex-col gap-2">
+	<span>Contributeur:</span>
+	{#if $project_data.contributors.length > 0}
+		<div>
+			<ul class="contributor-container flex gap-2 flex-wrap max-h-30vh overflow-auto">
+				{#each $project_data.contributors as contributor}
+					<li>
+						<div
+							class="flex gap-1 items-center p-2 border border-solid border-background3 rounded hover:bg-background4"
+						>
+							<!-- <img
+								src=""
+								alt=""
+								class="w-5 h-5 border border-solid border-background4 outline-none rounded-full"
+							/> -->
+							<span class="mx-2 text-font-color2">{contributor.username}</span>
+							<i
+								class="ri-close-large-line text-font-color3 hover:opacity-1 hover:text-red cursor-pointer"
+								on:click={() => {
+									removeContributor(contributor)
+								}}
+								role="button"
+								on:keypress={() => {}}
+								tabindex="0"
+							></i>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	{/if}
+	<div class="relative">
+		<div
+			class="flex border-solid h-8
+                {search_focus ? 'border-2 border-blue-btn' : 'border border-background3'}
+                items-center rounded"
+		>
+			<label for="search">
+				<i class="ri-search-line pl-2"></i>
+			</label>
+			<input
+				bind:value={to_search}
+				type="text"
+				name=""
+				id="search"
+				class="flex-grow bg-transparent outline-none w-full h-8 p-2 dropdown-btn"
+				on:focus={() => {
+					openDropdown(search_result_contributor)
+					search_focus = true
+				}}
+				on:blur={() => {
+					search_focus = false
+				}}
+			/>
+		</div>
+		{#if to_search && result.length > 0 && $search_result_contributor}
+			<div
+				class="p-2 bg-background2 border border-solid border-background3 rounded absolute w-full"
+			>
+				<ul>
+					{#each result as user}
+						<li class="hover:bg-background4 rounded">
+							<a
+								href="."
+								class="p-2 block"
+								on:click|preventDefault={() => {
+									addContributor(user)
+									to_search = ''
+								}}>{user.username}</a
+							>
+						</li>
+					{/each}
+				</ul>
+			</div>
+		{/if}
+	</div>
+</div>
+
+<style>
+	.contributor-container::-webkit-scrollbar-thumb {
+		background-color: var(--background3);
+	}
+</style>

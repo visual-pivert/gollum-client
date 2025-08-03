@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import { GollumGit } from '../GollumGit'
-import { sum } from './sum'
+import { env } from '../../../env'
 
 test('Push repository', async () => {
     const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test/first', {username: 'username', password: 'password'})
@@ -8,8 +8,8 @@ test('Push repository', async () => {
 })
 
 test('Clone repository', async () => {
-    const gollum_git = new GollumGit('/home/eliome/Test/ultime_git_test', {username: 'username', password: 'password'})
-    await gollum_git.clone('192.168.122.144/git/username/first', '')
+    const gollum_git = new GollumGit(env['LOCAL_REPO_PATH'], {username: 'username', password: 'password'})
+    await gollum_git.clone('192.168.122.144/git/username/new_repo2', '')
 })
 
 test('Pull repository', async () => {
