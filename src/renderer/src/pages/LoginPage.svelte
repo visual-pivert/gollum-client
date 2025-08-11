@@ -15,6 +15,9 @@
             const form_values = FormUtil.getFormData(e.target)
             const login_api_reponse = await window.api.loginSubmit(form_values)
             console.log("API reponse: " + JSON.stringify(login_api_reponse))
+			if (login_api_reponse["datas"]["access_token"]) {
+				RouteUtil.redirectTo("index-page")
+			}
         }}>
             <div class="mb-6">
                 <input class="form-input" type="text" name="username" placeholder="Nom d'utilisateur">
@@ -45,5 +48,5 @@
         max-width: 400px;
         padding: 10px;
     }
-    
+
 </style>
